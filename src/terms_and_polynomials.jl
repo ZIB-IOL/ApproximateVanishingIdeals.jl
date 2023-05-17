@@ -162,3 +162,74 @@ function mat_to_arr_of_arrs(A::Matrix{Any}, col_is_row::Int64=0)
     return transformed_A
     
 end
+
+
+function monomial_evaluation(m::Vector{Int64}, x::Vector{Float64}, coeff=1)
+    """
+    Evaluates monomial m at point x.
+    
+    # Arguments
+    - 'm::Vector{Int64}': monomial under which to evaluate x
+    - 'x::Vector{Float64}': point at which to evaluate m
+    - 'coeff=1': coefficient for monomial m, Optional
+    
+    # Returns 
+    - 'evaluation::Float64': evaluation of m at point x
+    """
+    result = 1
+    
+    for i in 1:length(m)
+        result *= x[i]^m[i]
+    end
+    
+    evaluation = coeff * result
+    return evaluation
+end
+
+
+function monomial_evaluation_set(m::Vector{Int64}, X::Vector{Vector{Float64}}, coeff=1)
+    """
+    Evaluates a set of points X under a single monomial m.
+    
+    # Arguments
+    - 'm::Vector{Int64}': monomial under which to evaluate X
+    - 'X::Vector{Vector{Float64}}': set of points to evaluate
+    - 'coeff=1': coefficient for monomial m, Optional
+    
+    # Returns
+    'evaluated::Vector{Float64}': Array of evaluations of m, evaluated[i] is the evaluation of m at point X[i].
+    """    
+    results = ones(length(X))
+        
+    for i in 1:length(X)
+        results[i] = monomial_evaluation(m, X[i])
+    end
+    evaluated = coeff * results
+    return evaluated
+    
+end
+
+
+function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{Float64}}, coeffs=1)
+    """
+    Evaluates a set of points X under a set of monomials M.
+    
+    # Arguments
+    - 'M::Vector{Vector{Int64}}': set of monomials under which to evaluate X
+    - 'X::Vector{Vector{Float64}}': set of points at which to evaluate M
+    - 'coeffs=1': coefficient(s) for all (each) monomial in M, Optional
+    
+    # Returns
+    - 'all_evaluated::Vector{Vector{Float64}}': Array of Arrays where all_evaluated[i][j] is 
+    monomial M[i] evaluated at point X[j]
+    """        
+    result = [[] for _ in 1:length(M)]
+    
+    for i in 1:length(M)
+        result[i] = monomial_evaluation_set(M[i], X)
+    end
+    
+    all_evaluated = coeffs .* result
+    return all_evaluated
+    
+end
