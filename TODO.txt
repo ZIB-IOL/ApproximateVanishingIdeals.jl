@@ -3,3 +3,6 @@
 
 # implement DegLexSort
 # write tests for 'construct_border', 'purge' and evaluation functions
+
+
+# Figure out how to rewrite everything for SparseArrays (at the end)
