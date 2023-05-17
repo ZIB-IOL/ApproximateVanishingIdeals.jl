@@ -1,2 +1,5 @@
 # create Project.toml
 # set up polynomial handling
+
+# implement DegLexSort
+# write tests for 'construct_border', 'purge' and evaluation functions
