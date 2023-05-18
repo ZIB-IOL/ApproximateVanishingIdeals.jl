@@ -120,10 +120,11 @@ function get_unique_elements(x_1::Vector, x_2::Vector=[])
     - 'x_2_unique::Vector{Any}': Array of entries corresponding to unique elements in x_1
     - 'unique_indices::Vector{Int}': Array with positions of unique elements in x
     """
-    unique_indices = unique(i -> x_1[i], 1:length(x_1))
-    x_1_unique = x_1[unique_indices]
+    sorted_x_1, sorted_x_2, sorted_list = deg_lex_sort(x_1, x_2)
+    unique_indices = unique(i -> sorted_x_1[i], 1:length(sorted_x_1))
+    x_1_unique = sorted_x_1[unique_indices]
     if x_2 != []
-        x_2_unique = x_2[unique_indices]
+        x_2_unique = sorted_x_2[unique_indices]
     else
         x_2_unique = x_2
     end
@@ -232,4 +233,49 @@ function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{
     all_evaluated = coeffs .* result
     return all_evaluated
     
+end
+
+
+function compute_degree(matrix::Vector{Vector{Int64}})
+    """
+    Computes the sum of the row entries, which for matrices representing terms is equal to the degree.
+    
+    # Arguments
+    - 'matrix::Vector{Vector{Int64}}': matrix whose row degrees have to be computed.
+    
+    # Returns
+    - 'degree_array::Vector{Int64}': Array containing degrees of all rows.
+    """
+    degree_array = sum.(matrix)
+    return degree_array
+end
+
+
+function deg_lex_sort(matrix_1::Vector{Vector{Int64}}, matrix_2=[])
+    """
+    Sorts the rows of matrix_1 degree-lexicographically and matrix_2 accordingly
+    
+    # Arguments
+    - 'matrix_1::Vector{Vector{Int64}}': term matrix to be sorted
+    - 'matrix_2': matrix getting sorted the same way matrix_1 is (Default is [])
+    
+    # Returns
+    - 'matrix_1::Vector{Vector{Int64}}': matrix_1 sorted degree_lexicographically
+    - 'matrix_2::Vector{Vector{Int64}}': matrix_2 sorted like matrix_1
+    """
+    degrees = compute_degree(matrix_1)
+    for i in 1:length(degrees)
+        # using reverse + Base.sortperm sorts first by degree and then 
+        # from last to first variable exponent.
+        matrix_1[i] = append!([degrees[i]], reverse(matrix_1[i]))
+    end
+    # find the permutation to correctly sort matrix_1
+    sorted_list = sortperm(matrix_1)
+    matrix_1 = matrix_1[sorted_list]
+    # deletes first entry (degree) in each term
+    matrix_1 = [reverse(deleteat!(matrix_1[i], 1)) for i in 1:length(matrix_1)]
+    if matrix_2 != []
+        matrix_2 = matrix_2[sorted_list]
+    end
+    return matrix_1, matrix_2, sorted_list
 end
