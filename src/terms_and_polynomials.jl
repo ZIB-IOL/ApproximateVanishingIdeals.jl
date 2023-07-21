@@ -1,31 +1,28 @@
 using LinearAlgebra
 using SparseArrays
 
-
+"""
+Constructs the border of terms. 
+    
+# Arguments
+- 'terms::Vector{Vector{Int}}': Array of terms to construct border from
+- 'terms_evaluated::Vector{Vector{Float64}}': Array of evaluations of terms
+- 'X_train::Vector{Vector{Float64}}': Array of n-dimensional data points
+- 'degree_1_terms::Vector{Vector{Int64}}': Array of terms of degree 1 to construct border terms, Optional (Default is [])
+- 'degree_1_terms_evaluated::Vector{Float64}': Array of evaluations of degree_1_terms, Optional (Default is [])
+- 'purging_terms::Vector{Vector{Int64}}': Purge terms divisible by these terms, Optional (Default is [])
+    
+# Returns
+- 'border_terms_raw::Vector{Vector{Int64}}': Array of unpurged border terms
+- 'border_evaluations_raw::Vector{Vector{Float64}}': Array of evaluations of border terms
+- 'non_purging_indices::Vector{Int64}': Array unique and non-purging indices in border_terms_raw
+"""
 function construct_border(
         terms::Vector{Vector{Int64}}, terms_evaluated::Vector{Vector{Float64}}, X_train::Vector{Vector{Float64}}, 
         degree_1_terms::Vector{Vector{Int64}}=[],  
         degree_1_terms_evaluated::Vector{Vector{Float64}}=[], 
         purging_terms::Vector{Vector{Int64}}=[])
-    """
-    Constructs the border of terms. 
-    
-    # Arguments
-    - 'terms::Vector{Vector{Int}}': Array of terms to construct border from
-    - 'terms_evaluated::Vector{Vector{Float64}}': Array of evaluations of terms
-    - 'X_train::Vector{Vector{Float64}}': Array of n-dimensional data points
-    - 'degree_1_terms::Vector{Vector{Int64}}': Array of terms of degree 1 to construct border terms, Optional 
-        (Default is [])
-    - 'degree_1_terms_evaluated::Vector{Float64}': Array of evaluations of degree_1_terms, Optional 
-        (Default is [])
-    - 'purging_terms::Vector{Vector{Int64}}': Purge terms divisible by these terms, Optional 
-        (Default is [])
-    
-    # Returns
-    - 'border_terms_raw::Vector{Vector{Int64}}': Array of unpurged border terms
-    - 'border_evaluations_raw::Vector{Vector{Float64}}': Array of evaluations of border terms
-    - 'non_purging_indices::Vector{Int64}': Array unique and non-purging indices in border_terms_raw
-    """
+
     
     if degree_1_terms == []
         # 'I' comes from the LinearAlgebra package
@@ -74,23 +71,24 @@ function construct_border(
 end
 
 
+"""
+Purges all the terms in 'terms' that are divisible by at least one term in 'purging_terms'.
+    
+# Arguments
+- 'terms::Vector{Vector{Int64}}': Array of terms 
+- 'terms_evaluated:::Vector{Vector{Float64}}': Array of evaluations of terms 
+- 'purging_terms::Vector{Vector{Int64}}':  Array of possible divisor terms
+    
+# Returns
+- 'terms[indices]::Vector{Vector{Int64}}': purged version of terms
+- 'terms_evaluated[indices]::Vector{Vector{Float64}}': purged version of terms_evaluated
+- 'indices::Vector{Int64}': Array of indices of purged terms in 'terms'
+"""
 function purge(
         terms::Vector{Vector{Int64}}, 
         terms_evaluated::Vector{Vector{Float64}}, 
         purging_terms::Vector{Vector{Int64}})
-    """
-    Purges all the terms in 'terms' that are divisible by at least one term in 'purging_terms'.
-    
-    # Arguments
-    - 'terms::Vector{Vector{Int64}}': Array of terms 
-    - 'terms_evaluated:::Vector{Vector{Float64}}': Array of evaluations of terms 
-    - 'purging_terms::Vector{Vector{Int64}}':  Array of possible divisor terms
-    
-    # Returns
-    - 'terms[indices]::Vector{Vector{Int64}}': purged version of terms
-    - 'terms_evaluated[indices]::Vector{Vector{Float64}}': purged version of terms_evaluated
-    - 'indices::Vector{Int64}': Array of indices of purged terms in 'terms'
-    """
+        
     indices = [x for x in 1:length(terms)]
     purge_indices = []
     for i in eachindex(terms)
@@ -105,21 +103,21 @@ function purge(
     return terms[indices], terms_evaluated[indices], indices
 end
 
-
+   
+"""
+Finds indices of unique elements in Array x.
+    
+# Arguments
+- 'x_1::Vector{Any}': object of which to find unique indices
+- 'x_2::Vector{Any}': Array with same length as x_1, Optional (Default is [])
+    
+# Returns
+- 'x_1_unique::Vector{Any}': Array of unique entries in x_1
+- 'x_2_unique::Vector{Any}': Array of entries corresponding to unique elements in x_1
+- 'unique_indices::Vector{Int}': Array with positions of unique elements in x
+"""
 function get_unique_elements(x_1::Vector, x_2::Vector=[])
-    
-    """
-    Finds indices of unique elements in Array x.
-    
-    # Arguments
-    - 'x_1::Vector{Any}': object of which to find unique indices
-    - 'x_2::Vector{Any}': Array with same length as x_1, Optional (Default is [])
-    
-    # Returns
-    - 'x_1_unique::Vector{Any}': Array of unique entries in x_1
-    - 'x_2_unique::Vector{Any}': Array of entries corresponding to unique elements in x_1
-    - 'unique_indices::Vector{Int}': Array with positions of unique elements in x
-    """
+
     sorted_x_1, sorted_x_2, sorted_list = deg_lex_sort(x_1, x_2)
     unique_indices = unique(i -> sorted_x_1[i], 1:length(sorted_x_1))
     x_1_unique = sorted_x_1[unique_indices]
@@ -134,18 +132,18 @@ function get_unique_elements(x_1::Vector, x_2::Vector=[])
 end
 
 
+"""
+Transforms an object of type Matrix{Any} to an Array of Arrays where each row is an individual Array.
+Mainly for testing, since rand(a:b, x, y) objects are of type Matrix. Probably not really needed but here nonetheless
+    
+# Arguments
+- 'A::Matrix{Any}': the matrix to transform
+- 'col_is_row::Int': If 1 (default 0), instead the columns of the matrix become individual Arrays.
+    
+# Returns
+- 'transformed_A::Vector{Vector{Any}}': transformed Array
+"""
 function mat_to_arr_of_arrs(A::Matrix{Any}, col_is_row::Int64=0)
-    """
-    Transforms an object of type Matrix{Any} to an Array of Arrays where each row is an individual Array.
-    Mainly for testing, since rand(a:b, x, y) objects are of type Matrix. Probably not really needed but here nonetheless
-    
-    # Arguments
-    - 'A::Matrix{Any}': the matrix to transform
-    - 'col_is_row::Int': If 1 (default 0), instead the columns of the matrix become individual Arrays.
-    
-    # Returns
-    - 'transformed_A::Vector{Vector{Any}}': transformed Array
-    """
 
     if  col_is_row == 0
         # converts matrix to array of arrays with rows of matrix being the individual entries of array,
@@ -165,18 +163,18 @@ function mat_to_arr_of_arrs(A::Matrix{Any}, col_is_row::Int64=0)
 end
 
 
+"""
+Evaluates monomial m at point x.
+    
+# Arguments
+- 'm::Vector{Int64}': monomial under which to evaluate x
+- 'x::Vector{Float64}': point at which to evaluate m
+- 'coeff=1': coefficient for monomial m, Optional
+    
+# Returns 
+- 'evaluation::Float64': evaluation of m at point x
+"""
 function monomial_evaluation(m::Vector{Int64}, x::Vector{Float64}, coeff=1)
-    """
-    Evaluates monomial m at point x.
-    
-    # Arguments
-    - 'm::Vector{Int64}': monomial under which to evaluate x
-    - 'x::Vector{Float64}': point at which to evaluate m
-    - 'coeff=1': coefficient for monomial m, Optional
-    
-    # Returns 
-    - 'evaluation::Float64': evaluation of m at point x
-    """
     result = 1
     
     for i in 1:length(m)
@@ -188,18 +186,18 @@ function monomial_evaluation(m::Vector{Int64}, x::Vector{Float64}, coeff=1)
 end
 
 
+"""
+Evaluates a set of points X under a single monomial m.
+    
+# Arguments
+- 'm::Vector{Int64}': monomial under which to evaluate X
+- 'X::Vector{Vector{Float64}}': set of points to evaluate
+- 'coeff=1': coefficient for monomial m, Optional
+    
+# Returns
+'evaluated::Vector{Float64}': Array of evaluations of m, evaluated[i] is the evaluation of m at point X[i].
+"""    
 function monomial_evaluation_set(m::Vector{Int64}, X::Vector{Vector{Float64}}, coeff=1)
-    """
-    Evaluates a set of points X under a single monomial m.
-    
-    # Arguments
-    - 'm::Vector{Int64}': monomial under which to evaluate X
-    - 'X::Vector{Vector{Float64}}': set of points to evaluate
-    - 'coeff=1': coefficient for monomial m, Optional
-    
-    # Returns
-    'evaluated::Vector{Float64}': Array of evaluations of m, evaluated[i] is the evaluation of m at point X[i].
-    """    
     results = ones(length(X))
         
     for i in 1:length(X)
@@ -211,19 +209,18 @@ function monomial_evaluation_set(m::Vector{Int64}, X::Vector{Vector{Float64}}, c
 end
 
 
-function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{Float64}}, coeffs=1)
-    """
-    Evaluates a set of points X under a set of monomials M.
+"""
+Evaluates a set of points X under a set of monomials M.
     
-    # Arguments
-    - 'M::Vector{Vector{Int64}}': set of monomials under which to evaluate X
-    - 'X::Vector{Vector{Float64}}': set of points at which to evaluate M
-    - 'coeffs=1': coefficient(s) for all (each) monomial in M, Optional
+# Arguments
+- 'M::Vector{Vector{Int64}}': set of monomials under which to evaluate X
+- 'X::Vector{Vector{Float64}}': set of points at which to evaluate M
+- 'coeffs=1': coefficient(s) for all (each) monomial in M, Optional
     
-    # Returns
-    - 'all_evaluated::Vector{Vector{Float64}}': Array of Arrays where all_evaluated[i][j] is 
-    monomial M[i] evaluated at point X[j]
-    """        
+# Returns
+- 'all_evaluated::Vector{Vector{Float64}}': Array of Arrays where all_evaluated[i][j] is monomial M[i] evaluated at point X[j]
+"""      
+function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{Float64}}, coeffs=1)  
     result = [[] for _ in 1:length(M)]
     
     for i in 1:length(M)
@@ -236,33 +233,33 @@ function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{
 end
 
 
+"""
+Computes the sum of the row entries, which for matrices representing terms is equal to the degree.
+    
+# Arguments
+- 'matrix::Vector{Vector{Int64}}': matrix whose row degrees have to be computed.
+    
+# Returns
+- 'degree_array::Vector{Int64}': Array containing degrees of all rows.
+"""
 function compute_degree(matrix::Vector{Vector{Int64}})
-    """
-    Computes the sum of the row entries, which for matrices representing terms is equal to the degree.
-    
-    # Arguments
-    - 'matrix::Vector{Vector{Int64}}': matrix whose row degrees have to be computed.
-    
-    # Returns
-    - 'degree_array::Vector{Int64}': Array containing degrees of all rows.
-    """
     degree_array = sum.(matrix)
     return degree_array
 end
 
-
+    
+"""
+Sorts the rows of matrix_1 degree-lexicographically and matrix_2 accordingly
+    
+# Arguments
+- 'matrix_1::Vector{Vector{Int64}}': term matrix to be sorted
+- 'matrix_2': matrix getting sorted the same way matrix_1 is (Default is [])
+    
+# Returns
+- 'matrix_1::Vector{Vector{Int64}}': matrix_1 sorted degree_lexicographically
+- 'matrix_2::Vector{Vector{Int64}}': matrix_2 sorted like matrix_1
+"""
 function deg_lex_sort(matrix_1::Vector{Vector{Int64}}, matrix_2=[])
-    """
-    Sorts the rows of matrix_1 degree-lexicographically and matrix_2 accordingly
-    
-    # Arguments
-    - 'matrix_1::Vector{Vector{Int64}}': term matrix to be sorted
-    - 'matrix_2': matrix getting sorted the same way matrix_1 is (Default is [])
-    
-    # Returns
-    - 'matrix_1::Vector{Vector{Int64}}': matrix_1 sorted degree_lexicographically
-    - 'matrix_2::Vector{Vector{Int64}}': matrix_2 sorted like matrix_1
-    """
     degrees = compute_degree(matrix_1)
     for i in 1:length(degrees)
         # using reverse + Base.sortperm sorts first by degree and then 
