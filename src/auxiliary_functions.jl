@@ -1,4 +1,4 @@
-
+using LinearAlgebra
 
 """
 Finds indices of unique elements in Array x.
