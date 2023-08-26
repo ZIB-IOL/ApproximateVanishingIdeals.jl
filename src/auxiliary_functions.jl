@@ -1,174 +1,118 @@
 using LinearAlgebra
 
 """
-Finds indices of unique elements in Array x.
-    
-# Arguments
-- 'x_1::Vector{Any}': object of which to find unique indices
-- 'x_2::Vector{Any}': Array with same length as x_1, Optional (Default is [])
-    
-# Returns
-- 'x_1_unique::Vector{Any}': Array of unique entries in x_1
-- 'x_2_unique::Vector{Any}': Array of entries corresponding to unique elements in x_1
-- 'unique_indices::Vector{Int}': Array with positions of unique elements in x
+finds unique columns in matrix x1 and returns only unique elements in x1 as well as corresponding columns in x2.
 """
-function get_unique_elements(x_1::Vector, x_2::Vector=[])
-
-    sorted_x_1, sorted_x_2, sorted_list = deg_lex_sort(x_1, x_2)
-    unique_indices = unique(i -> sorted_x_1[i], 1:length(sorted_x_1))
-    x_1_unique = sorted_x_1[unique_indices]
-    if x_2 != []
-        x_2_unique = sorted_x_2[unique_indices]
+function get_unique_columns(x1::Matrix, x2::Matrix=zeros(0, 0))
+    #cx1, cx2 = copy(x1), copy(x2)
+    sorted_x1, sorted_x2, sorted_list = deg_lex_sort(x1, x2)
+    unique_indices = unique(i -> sorted_x1[:, i], 1:size(sorted_x1, 2))
+    x1_unique = sorted_x1[:, unique_indices]
+    if size(x2) != (0, 0)
+        x2_unique = sorted_x2[:, unique_indices]
     else
-        x_2_unique = x_2
+        x2_unique = x2
     end
-        
-    return x_1_unique, x_2_unique, unique_indices
+
+    return x1_unique, x2_unique, unique_indices
+end
+
+"""
+sorts matrix1 degree-lexicographically and matrix2 accordingly
+"""
+function deg_lex_sort(matrix1::Matrix, matrix2::Matrix=zeros(0, 0))
+    sorted_matrix2 = nothing
     
+    rev_mat1 = matrix1[end:-1:1, :]
+    mat = vcat(compute_degree(matrix1), rev_mat1)
+    sorted_list = sortperm(collect(eachcol(mat)))
+
+    sorted_matrix1 = matrix1[:, sorted_list]
+
+    if size(matrix2) != (0, 0)
+        sorted_matrix2 = matrix2[:, sorted_list]
+    end
+    return sorted_matrix1, sorted_matrix2, sorted_list
 end
 
 
 """
-Transforms an object of type Matrix{Any} to an Array of Arrays where each row is an individual Array.
-Mainly for testing, since rand(a:b, x, y) objects are of type Matrix. Probably not really needed but here nonetheless
-    
-# Arguments
-- 'A::Matrix{Any}': the matrix to transform
-- 'col_is_row::Int': If 1 (default 0), instead the columns of the matrix become individual Arrays.
-    
-# Returns
-- 'transformed_A::Vector{Vector{Any}}': transformed Array
+Computes sum (degree) of columns (terms) in A and returns output as (1 x size(A, 2)) matrix.
 """
-function mat_to_arr_of_arrs(A::Matrix{Any}, col_is_row::Int64=0)
+function compute_degree(A::Matrix{Int64})
+    return sum(A, dims=1)
+end
 
-    if  col_is_row == 0
-        # converts matrix to array of arrays with rows of matrix being the individual entries of array,
-        # i.e. first row of matrix A becomes the array result[1]
-        transformed_A = [A[i,:] for i in 1:size(A,1)]
-    
-    
-    elseif col_is_row == 1
-        # converts matrix to array of arrays with columns of matrix being the individual entries of array,
-        # i.e. first column of matrix A becomes the array result[1]
-        transformed_A = [A[:,i] for i in 1:size(A,2)]
-       
+                
+"""
+converts Array of Arrays to Matrix where A[i] becomes row [i] in output Matrix. 
+If optional parameter 'arr_is_col' = 1 convert arrays into columns instead of rows.
+"""
+function vecvec_to_mat(A; arr_is_col::Int64=0)
+    elem_type = eltype(A[1])
+    A_mat = zeros(elem_type, length(A), length(A[1]))
+    @inbounds for i in eachindex(A)
+        A_mat[i, :] = A[i]
     end
     
-    return transformed_A
+    if arr_is_col == 0
+        return A_mat
+    end
     
+    if arr_is_col == 1
+        return A_mat'
+    end
+    
+    println("Argument 'arr_is_col' needs to be in {0, 1}.")
+    return nothing
 end
 
 
 """
-Evaluates monomial m at point x.
-    
-# Arguments
-- 'm::Vector{Int64}': monomial under which to evaluate x
-- 'x::Vector{Float64}': point at which to evaluate m
-- 'coeff=1': coefficient for monomial m, Optional
-    
-# Returns 
-- 'evaluation::Float64': evaluation of m at point x
+tiles each column in A k-times
 """
-function monomial_evaluation(m::Vector{Int64}, x::Vector{Float64}, coeff=1)
-    result = 1
-    
-    for i in 1:length(m)
-        result *= x[i]^m[i]
+function tile(A, k)
+    tile_A = zeros(typeof(A[1]), size(A, 1), 0)
+    @inbounds for i in 1:size(A, 2)
+        tile_Ai = reshape(repeat(A[:, i], k), size(A, 1), k)
+        tile_A = hcat(tile_A, tile_Ai)
     end
-    
-    evaluation = coeff * result
-    return evaluation
-end
+    return tile_A
+end                            
 
 
 """
-Evaluates a set of points X under a single monomial m.
-    
-# Arguments
-- 'm::Vector{Int64}': monomial under which to evaluate X
-- 'X::Vector{Vector{Float64}}': set of points to evaluate
-- 'coeff=1': coefficient for monomial m, Optional
-    
-# Returns
-'evaluated::Vector{Float64}': Array of evaluations of m, evaluated[i] is the evaluation of m at point X[i].
-"""    
-function monomial_evaluation_set(m::Vector{Int64}, X::Vector{Vector{Float64}}, coeff=1)
-    results = ones(length(X))
-        
-    for i in 1:length(X)
-        results[i] = monomial_evaluation(m, X[i])
+Finds last non-zero entry in each column and returns a list of the indices.
+In case of a zero-column returns last index.
+"""
+function find_last_non_zero_entries(matrix::Matrix)
+    indices = Array{Int64}([])
+    @inbounds for a in eachcol(matrix)
+        idx = []
+        @inbounds for i in eachindex(a)
+            if a[i] != 0
+                push!(idx, i)
+            end
+        end
+        if length(idx) > 0
+            indices = append!(indices, idx[end])
+        else
+            indices = append!(indices, length(a))
+        end
     end
-    evaluated = coeff * results
-    return evaluated
-    
+    return indices
 end
-
-
+    
+    
 """
-Evaluates a set of points X under a set of monomials M.
-    
-# Arguments
-- 'M::Vector{Vector{Int64}}': set of monomials under which to evaluate X
-- 'X::Vector{Vector{Float64}}': set of points at which to evaluate M
-- 'coeffs=1': coefficient(s) for all (each) monomial in M, Optional
-    
-# Returns
-- 'all_evaluated::Vector{Vector{Float64}}': Array of Arrays where all_evaluated[i][j] is monomial M[i] evaluated at point X[j]
-"""      
-function monomial_set_evaluation_set(M::Vector{Vector{Int64}}, X::Vector{Vector{Float64}}, coeffs=1)  
-    result = [[] for _ in 1:length(M)]
-    
-    for i in 1:length(M)
-        result[i] = monomial_evaluation_set(M[i], X)
+Finds first non-zero entry in each column and returns a list of the indices.
+In case of a zero-column returns first index.
+"""
+function find_first_non_zero_entries(matrix::Matrix)
+    indices = Array{Int64}([])
+    @inbounds for a in eachcol(matrix)
+        indices = append!(indices, findmax(a)[2])
     end
-    
-    all_evaluated = coeffs .* result
-    return all_evaluated
-    
+    return indices
 end
-
-
-"""
-Computes the sum of the row entries, which for matrices representing terms is equal to the degree.
     
-# Arguments
-- 'matrix::Vector{Vector{Int64}}': matrix whose row degrees have to be computed.
-    
-# Returns
-- 'degree_array::Vector{Int64}': Array containing degrees of all rows.
-"""
-function compute_degree(matrix::Vector{Vector{Int64}})
-    degree_array = sum.(matrix)
-    return degree_array
-end
-
-    
-"""
-Sorts the rows of matrix_1 degree-lexicographically and matrix_2 accordingly
-    
-# Arguments
-- 'matrix_1::Vector{Vector{Int64}}': term matrix to be sorted
-- 'matrix_2': matrix getting sorted the same way matrix_1 is (Default is [])
-    
-# Returns
-- 'matrix_1::Vector{Vector{Int64}}': matrix_1 sorted degree_lexicographically
-- 'matrix_2::Vector{Vector{Int64}}': matrix_2 sorted like matrix_1
-"""
-function deg_lex_sort(matrix_1::Vector{Vector{Int64}}, matrix_2=[])
-    degrees = compute_degree(matrix_1)
-    for i in 1:length(degrees)
-        # using reverse + Base.sortperm sorts first by degree and then 
-        # from last to first variable exponent.
-        matrix_1[i] = append!([degrees[i]], reverse(matrix_1[i]))
-    end
-    # find the permutation to correctly sort matrix_1
-    sorted_list = sortperm(matrix_1)
-    matrix_1 = matrix_1[sorted_list]
-    # deletes first entry (degree) in each term
-    matrix_1 = [reverse(deleteat!(matrix_1[i], 1)) for i in 1:length(matrix_1)]
-    if matrix_2 != []
-        matrix_2 = matrix_2[sorted_list]
-    end
-    return matrix_1, matrix_2, sorted_list
-end
