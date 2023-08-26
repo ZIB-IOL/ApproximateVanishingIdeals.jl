@@ -8,17 +8,19 @@ include("objective_functions.jl")
 
 
 @testset "Test suite for fit" begin
-  m, n = rand(15:25), rand(4:10)
-  X_train = rand(m, n)
-  X_train_transformed, sets = fit(X_train)
-  loss_list = Vector{Float64}([])
-  for col in 1:size(sets.G_evaluations, 2)
-    cur_col = sets.G_evaluations[:, col]
-    loss = 1 / size(cur_col, 1) * (norm(cur_col, 2)^2)
-    loss_list = append!(loss_list, loss)
+  for oracle in ["CG", "PCG", "BPCG"]
+    m, n = rand(15:25), rand(4:10)
+    X_train = rand(m, n)
+    X_train_transformed, sets = fit(X_train,oracle_type=oracle)
+    loss_list = Vector{Float64}([])
+    for col in 1:size(sets.G_evaluations, 2)
+      cur_col = sets.G_evaluations[:, col]
+      loss = 1 / size(cur_col, 1) * (norm(cur_col, 2)^2)
+      loss_list = append!(loss_list, loss)
+    end
+    @test all(loss_list .<= 0.1)
   end
-  @test all(loss_list .<= 0.1)
-end
+end;
 
 
 @testset "Test suite for l1_projection" begin
