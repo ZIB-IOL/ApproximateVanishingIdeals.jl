@@ -1,2 +1,3 @@
 # create Project.toml
-# set up polynomial handling
+
+# implement ABM and add option to use in fit()
