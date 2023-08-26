@@ -18,9 +18,17 @@ include("../src/auxiliary_functions.jl")
 end
 
 
-matrix = vecvec_to_mat([[1, 2, 3, 4, 3], [0, 1, 2, 3, 2], [1, 3, 1, 2, 1]])
-matrix_sorted = vecvec_to_mat([[1, 3, 3, 2, 4], [0, 2, 2, 1, 3], [1, 1, 1, 3, 2]])
-matrix_unique = vecvec_to_mat([[1, 3, 2, 4], [0, 2, 1, 3], [1, 1, 3, 2]])
+matrix = vecvec_to_mat([[1, 2, 3, 4, 3], 
+                        [0, 1, 2, 3, 2], 
+                        [1, 3, 1, 2, 1]])
+
+matrix_sorted = vecvec_to_mat([[1, 3, 3, 2, 4], 
+                               [0, 2, 2, 1, 3], 
+                               [1, 1, 1, 3, 2]])
+
+matrix_unique = vecvec_to_mat([[1, 3, 2, 4],
+                               [0, 2, 1, 3],
+                               [1, 1, 3, 2]])
 
 
 @testset "Test suite for deg_lex_sort" begin
