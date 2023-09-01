@@ -14,7 +14,7 @@ Creates OAVI feature transformation fitted to X_train
 - 'inverse_hessian_boost::String': denotes whether to use 'full', 'weak' or no inverse hessian boosting
 
 # Returns
-- 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
+- 'X_train_transformed::Matrix{Float64}': transformed X_train
 - 'sets::SetsOandG': instance of mutable struct 'SetsOandG' keeping track of important sets 
 """ 
 function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}; 
