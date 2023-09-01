@@ -17,6 +17,7 @@ function get_unique_columns(x1::Matrix, x2::Matrix=zeros(0, 0))
     return x1_unique, x2_unique, unique_indices
 end
 
+
 """
 sorts matrix1 degree-lexicographically and matrix2 accordingly
 """
@@ -46,7 +47,6 @@ end
                 
 """
 converts Array of Arrays to Matrix where A[i] becomes row [i] in output Matrix. 
-If optional parameter 'arr_is_col' = 1 convert arrays into columns instead of rows.
 """
 function vecvec_to_mat(A; arr_is_col::Int64=0)
     elem_type = eltype(A[1])
@@ -54,17 +54,7 @@ function vecvec_to_mat(A; arr_is_col::Int64=0)
     @inbounds for i in eachindex(A)
         A_mat[i, :] = A[i]
     end
-    
-    if arr_is_col == 0
-        return A_mat
-    end
-    
-    if arr_is_col == 1
-        return A_mat'
-    end
-    
-    println("Argument 'arr_is_col' needs to be in {0, 1}.")
-    return nothing
+    return A_mat
 end
 
 
