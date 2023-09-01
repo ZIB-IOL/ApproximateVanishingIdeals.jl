@@ -2,7 +2,7 @@
 Creates OAVI feature transformation fitted to X_train
 
 # Arguments
-- 'X_train::Vector{Vector{Float64}}': training data
+- 'X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}': training data
 - 'max_degree::Int64': max degree of polynomials computed (default 10)
 - 'psi::Float64': vanishing extent (default 0.1)
 - 'epsilon::Float64': accuracy for convex optimizer (default 0.001)
