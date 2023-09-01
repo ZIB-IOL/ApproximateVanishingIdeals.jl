@@ -7,6 +7,11 @@ Creates OAVI feature transformation fitted to X_train
 - 'psi::Float64': vanishing extent (default 0.1)
 - 'epsilon::Float64': accuracy for convex optimizer (default 0.001)
 - 'tau::Union{Float64, Int64}': upper bound on norm of coefficient vector
+- 'lmbda::Float64': regularization parameter (default is 0)
+- 'objective_type::String': type of objective (default is "L2Loss")
+- 'region_type::String': feasible region (default is "L1Ball")
+- 'oracle_type::String': denotes which oracle to use (default is "CG")
+- 'inverse_hessian_boost::String': denotes whether to use 'full', 'weak' or no inverse hessian boosting
 
 # Returns
 - 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
@@ -14,7 +19,7 @@ Creates OAVI feature transformation fitted to X_train
 """ 
 function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}; 
         max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=1000,
-        lmbda::Float64=0., tol::Float64=0.0001, objective_type::String="L2Loss", region_type::String="L1Ball", 
+        lmbda::Float64=0., objective_type::String="L2Loss", region_type::String="L1Ball", 
         oracle_type::String="CG", max_iters::Int64=10000, inverse_hessian_boost::String="false")
 
     if typeof(X_train) != Matrix{Float64}
