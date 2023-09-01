@@ -56,7 +56,6 @@ function construct_L2Loss(
         A_b = reshape(A_b, n, 1)
     end
     
-    
     # A_squared_inv
     A_squared_inv = nothing
     solution = nothing
@@ -89,7 +88,7 @@ function construct_L2Loss(
         return storage .= A_squared * x + A_b
     end
 
-    return L2Loss(A, A_squared, A_b, b_squared, A_squared_inv, solution), evaluate_function, evaluate_gradient!
+    return L2Loss(A, A_squared, A_b, b, b_squared, A_squared_inv, solution), evaluate_function, evaluate_gradient!
     
 end
 
@@ -101,6 +100,7 @@ mutable struct L2Loss
     A
     A_squared
     A_b
+    b
     b_squared
     A_squared_inv
     solution    
