@@ -10,7 +10,7 @@ Creates OAVI feature transformation fitted to X_train
 
 # Returns
 - 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
-- 'sets::sets_avi': instance of mutable struct keeping track of sets for AVI 
+- 'sets::SetsOandG': instance of mutable struct 'SetsOandG' keeping track of important sets 
 """ 
 function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}; 
         max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=1000,
@@ -67,11 +67,12 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
             term_evaluated = border_evaluations[:, col_idx] 
             data_term_evaluated = data' * term_evaluated
             term_evaluated_squared = term_evaluated' * term_evaluated
+            data_with_labels = hcat(data, term_evaluated)
             
             f, grad!, region = nothing, nothing, nothing           
             
             if objective_type == "L2Loss"
-                L2, f, grad! = construct_L2Loss(data, term_evaluated; lmbda=lmbda, data_squared=data_squared, labels_squared=term_evaluated_squared, 
+                objective_data, f, grad! = construct_L2Loss(data, term_evaluated; lmbda=lmbda, data_squared=data_squared, labels_squared=term_evaluated_squared, 
                                     data_squared_inverse=data_squared_inverse, data_labels=data_term_evaluated)
             end
 
@@ -83,19 +84,49 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
             @assert grad! != nothing "Gradient of f not defined."
             @assert region != nothing "Feasible region not defined."
 
-            if inverse_hessian_boost in ["weak", "full"]
-                x0 = L1_projection(L2.solution; radius=tau-1)
+            if inverse_hessian_boost == "full"
+                x0 = l1_projection(objective_data.solution; radius=tau-1)
                 x0 = reshape(x0, size(x0, 1))
+                
+                coefficient_vector = call_oracle(f, grad!, region, x0)
+                coefficient_vector = vcat(coefficient_vector, [1])
+                
+                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
+                
+            elseif inverse_hessian_boost == "weak"
+                x0 = l1_projection(objective_data.solution; radius=tau-1)
+                x0 = reshape(x0, size(x0, 1))
+                
+                coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
+                coefficient_vector = vcat(coefficient_vector, [1])
+                
+                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
+                
+                if loss <= psi
+                    x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))
+                    x0 = Vector(x0)
+                    
+                    tmp_coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
+                    tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
+                    
+                    loss_2 = (1 / size(data, 1)) * norm(data_with_labels * tmp_coefficient_vector, 2)^2
+                    
+                    if loss_2 <= psi
+                        loss = loss_2
+                        coefficient_vector = tmp_coefficient_vector
+                    end
+                    
+                end     
+                
             else
-                x0 = Vector(compute_extreme_point(region, zeros(Float64, size(data, 2))))
+                x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))
+                x0 = Vector(x0)
+                
+                coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
+                coefficient_vector = vcat(coefficient_vector, [1])
+
+                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
             end
-            
-            # Inverse hessian boost einbauen -> zwei durchläufe mit und ohne boost. call_oracle in Python code anschauen!
-            coefficient_vector = call_oracle(f, grad!, region, x0)
-            coefficient_vector = vcat(coefficient_vector, [1])
-            coefficient_vector = reshape(coefficient_vector, size(coefficient_vector, 1), 1)
-            data_with_labels = hcat(data, term_evaluated)
-            loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
             
             if loss <= psi
                 leading_terms = append!(leading_terms, col_idx)
