@@ -7,20 +7,20 @@ Creates OAVI feature transformation fitted to X_train
 - 'psi::Float64': vanishing extent (default 0.1)
 - 'epsilon::Float64': accuracy for convex optimizer (default 0.001)
 - 'tau::Union{Float64, Int64}': upper bound on norm of coefficient vector
-- 'lmbda::Float64': regularization parameter (default is 0)
-- 'objective_type::String': type of objective (default is "L2Loss")
-- 'region_type::String': feasible region (default is "L1Ball")
-- 'oracle_type::String': denotes which oracle to use (default is "CG")
-- 'inverse_hessian_boost::String': denotes whether to use 'full', 'weak' or no inverse hessian boosting
+- 'lambda::Float64': regularization parameter
+- 'oracle::Union{String, <:Function}': string denoting which predefined constructor to use OR constructor function.
+                                        (external constructor function MUST have 'data' and 'labels' as varargs + kwargs)
+- 'orcl_kwargs::Vector': Array containing keyword arguments for external constructor functions
+                            e.g.: orcl_kwargs = [(:psi, 0.05), (:epsilon, 0.0003)] inputs psi=0.05 and epsilon=0.0003 as kwargs
 
 # Returns
-- 'X_train_transformed::Matrix{Float64}': transformed X_train
+- 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
 - 'sets::SetsOandG': instance of mutable struct 'SetsOandG' keeping track of important sets 
 """ 
 function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}; 
         max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=1000,
-        lmbda::Float64=0., objective_type::String="L2Loss", region_type::String="L1Ball", 
-        oracle_type::String="CG", max_iters::Int64=10000, inverse_hessian_boost::String="false")
+        lambda::Float64=0., oracle::Union{String, <:Function}="CG", max_iters::Int64=10000, 
+        inverse_hessian_boost::String="false", orcl_kwargs::Vector=[]) 
 
     if typeof(X_train) != Matrix{Float64}
         X_train = vecvec_to_mat(X_train)
@@ -72,65 +72,18 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
             term_evaluated = border_evaluations[:, col_idx] 
             data_term_evaluated = data' * term_evaluated
             term_evaluated_squared = term_evaluated' * term_evaluated
-            data_with_labels = hcat(data, term_evaluated)
             
-            f, grad!, region = nothing, nothing, nothing           
+            if oracle in ["CG", "BCG", "BPCG"]
+                coefficient_vector, loss = conditional_gradients(oracle, data, term_evaluated, 
+                lambda, data_squared, data_term_evaluated, term_evaluated_squared; data_squared_inverse=data_squared_inverse, 
+                psi=psi, epsilon=epsilon, tau=tau, inverse_hessian_boost=inverse_hessian_boost)
             
-            if objective_type == "L2Loss"
-                objective_data, f, grad! = construct_L2Loss(data, term_evaluated; lmbda=lmbda, data_squared=data_squared, labels_squared=term_evaluated_squared, 
-                                    data_squared_inverse=data_squared_inverse, data_labels=data_term_evaluated)
-            end
-
-            if region_type == "L1Ball"
-                region = FrankWolfe.LpNormLMO{1}(tau-1)
-            end
-
-            @assert f != nothing "Objective function f not defined."
-            @assert grad! != nothing "Gradient of f not defined."
-            @assert region != nothing "Feasible region not defined."
-
-            if inverse_hessian_boost == "full"
-                x0 = l1_projection(objective_data.solution; radius=tau-1)
-                x0 = reshape(x0, size(x0, 1))
-                
-                coefficient_vector = call_oracle(f, grad!, region, x0)
-                coefficient_vector = vcat(coefficient_vector, [1])
-                
-                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
-                
-            elseif inverse_hessian_boost == "weak"
-                x0 = l1_projection(objective_data.solution; radius=tau-1)
-                x0 = reshape(x0, size(x0, 1))
-                
-                coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
-                coefficient_vector = vcat(coefficient_vector, [1])
-                
-                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
-                
-                if loss <= psi
-                    x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))
-                    x0 = Vector(x0)
-                    
-                    tmp_coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
-                    tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
-                    
-                    loss_2 = (1 / size(data, 1)) * norm(data_with_labels * tmp_coefficient_vector, 2)^2
-                    
-                    if loss_2 <= psi
-                        loss = loss_2
-                        coefficient_vector = tmp_coefficient_vector
-                    end
-                    
-                end     
-                
+            elseif oracle == "ABM"
+                coefficient_vector, loss = abm(data, labels, data_squared, data_term_evaluated, term_evaluated_squared)
+            
+            # external constructor
             else
-                x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))
-                x0 = Vector(x0)
-                
-                coefficient_vector = call_oracle(f, grad!, region, x0; oracle=oracle_type)
-                coefficient_vector = vcat(coefficient_vector, [1])
-
-                loss = (1 / size(data, 1)) * norm(data_with_labels * coefficient_vector, 2)^2
+                coefficent_vector, loss = oracle(data, labels; orcl_kwargs...)
             end
             
             if loss <= psi
@@ -164,34 +117,4 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
     
     return X_train_transformed, sets
     
-end
-    
-    
-"""
-Projects x onto the L1 Ball with radius 'radius'.
-
-Reference: 
-"Efficient Projections onto the ℓ1-Ball for Learning in High Dimensions", https://stanford.edu/~jduchi/projects/DuchiShSiCh08.pdf
-"""
-function l1_projection(x; radius=1.)
-    @assert radius > 0 "Radius must be positive."
-    
-    if norm(x, 1) <= radius
-        return x
-    end
-    
-    n = size(x, 1)
-    x = reshape(x, n, 1)
-    v = abs.(x)
-    u = sort(v, dims=1)
-    u = reverse(u)
-    
-    csum = cumsum(u, dims=1)
-    
-    p = findlast(u .* collect(1:n) .> csum .- radius)[1]
-    
-    theta = (1 / p) * (csum[p] - radius)
-    
-    w = reshape([max(v[i]-theta, 0) for i in 1:size(v, 1)], n, 1)
-    return sign.(x) .* w
 end
