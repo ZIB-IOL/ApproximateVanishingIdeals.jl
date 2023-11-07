@@ -18,7 +18,7 @@ Creates OAVI feature transformation fitted to X_train
 - 'sets::SetsOandG': instance of mutable struct 'SetsOandG' keeping track of important sets 
 """ 
 function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}; 
-        max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=1000,
+        max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=1000.,
         lambda::Float64=0., oracle::Union{String, <:Function}="CG", max_iters::Int64=10000, 
         inverse_hessian_boost::String="false", orcl_kwargs::Vector=[]) 
 
@@ -28,15 +28,11 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
     
     m, n = size(X_train)
     
-    sets = SetsOandG(Vector{Any}([nothing]), Vector{Any}([nothing]), Vector{Any}([nothing]), Vector{Any}([nothing]), Vector{Any}([nothing]),
-    zeros(Int64, n, 1), ones(Float64, m, 1), [], Vector{Int64}([]),
-    Vector{Any}([nothing]), zeros(Float64, m, 0), 
-    nothing)
+    sets = construct_SetsOandG(X_train)
     
     degree = 0
     while degree < max_degree
-        degree += 1 
-        sets.O_degree_indices = append!(sets.O_degree_indices, size(sets.O_terms, 2) + 1)       
+        degree += 1        
         
         if degree == 1
             border_terms_raw, border_evaluations_raw, non_purging_indices = construct_border(sets.O_terms, sets.O_evaluations, X_train)
@@ -76,7 +72,7 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
             if oracle in ["CG", "BCG", "BPCG"]
                 coefficient_vector, loss = conditional_gradients(oracle, data, term_evaluated, 
                 lambda, data_squared, data_term_evaluated, term_evaluated_squared; data_squared_inverse=data_squared_inverse, 
-                psi=psi, epsilon=epsilon, tau=tau, inverse_hessian_boost=inverse_hessian_boost)
+                psi=psi, epsilon=epsilon, tau=1. * tau, inverse_hessian_boost=inverse_hessian_boost)
             
             elseif oracle == "ABM"
                 coefficient_vector, loss = abm(data, labels, data_squared, data_term_evaluated, term_evaluated_squared)
@@ -101,9 +97,11 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
         update_G(sets, G_coefficient_vectors)
         
         if O_indices == []
+            sets.O_degree_indices = sets.O_degree_indices[1:length(sets.O_degree_indices)-1]
             break
         else
             update_O(sets, border_terms[:, O_indices], border_evaluations[:, O_indices], O_indices)
+            sets.O_degree_indices = append!(sets.O_degree_indices, size(sets.O_terms, 2) + 1)
         end
     end
     

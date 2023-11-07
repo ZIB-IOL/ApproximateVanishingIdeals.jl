@@ -116,3 +116,10 @@ function find_first_non_zero_entries(matrix::Matrix)
     return indices
 end
     
+
+"""Obtains orthogonal projections of vector projected onto vectors."""
+function orthogonal_projection(vectors::Matrix{Float64}, vector::Vector{Float64})
+    @assert size(vectors, 1) == size(vector, 1) "Vectors should have identical length."
+    orthogonal_components = vector' * vectors
+    return orthogonal_components'
+end

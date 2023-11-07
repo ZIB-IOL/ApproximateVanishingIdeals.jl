@@ -1,7 +1,4 @@
 using LinearAlgebra
-using SparseArrays
-
-# SET CONSTRUCTION AND MAINTENANCE
 
 """
 Creates and keeps track of sets O and G for OAVI.
@@ -35,6 +32,37 @@ G_evaluations
 # leading terms
 leading_terms
     
+end
+
+
+"""initializes SetsOandG instance w.r.t. X_train"""
+function construct_SetsOandG(X_train)
+    m, n = size(X_train)
+    
+    # border sets
+    border_terms_raw = Vector{Any}([nothing])
+    border_evaluations_raw = Vector{Any}([nothing])
+    border_terms_purged = Vector{Any}([nothing])
+    border_evaluations_purged = Vector{Any}([nothing])
+    non_purging_indices = Vector{Any}([nothing])
+    
+    # O sets
+    O_terms = zeros(Int64, n, 1)
+    O_evaluations = ones(Float64, m, 1)
+    O_indices = []
+    O_degree_indices = [2] # degree 1 always starts at index 2
+    
+    # G sets
+    G_coefficient_vectors = Vector{Any}([nothing])
+    G_evaluations = zeros(Float64, m, 0)
+    
+    # leading terms
+    leading_terms = nothing
+    
+    return SetsOandG(border_terms_raw, border_evaluations_raw, border_terms_purged, border_evaluations_purged, non_purging_indices,
+                    O_terms, O_evaluations, O_indices, O_degree_indices,
+                    G_coefficient_vectors, G_evaluations,
+                    leading_terms)
 end
 
 
@@ -117,8 +145,58 @@ function update_leading_terms(sets, leading_terms=nothing)
 end
 
 
-#-------------------------------------------------------------------------------------
-# BORDER CONSTRUCTION
+"""applies the transformation corresponding to G to X_test"""
+function apply_G_transformation(sets::SetsOandG, X_test)
+    m, n = size(X_test)
+    test_sets_avi = construct_SetsOandG(X_test)
+    
+    append!(test_sets_avi.border_evaluations_raw, [X_test])
+    
+    # degree-1 border
+    i = 1
+    append!(test_sets_avi.border_evaluations_purged, [X_test])
+    update_G(test_sets_avi, sets.G_coefficient_vectors[i+1])
+    if i < size(sets.O_evaluations, 2)
+        test_sets_avi.O_evaluations = hcat(test_sets_avi.O_evaluations, X_test[:, sets.O_indices[i]])
+    end
+    
+    # higher degree border
+    if sets.O_degree_indices != []  # only if higher degrees need to be considered
+        i = 2
+        while i < max(sets.O_degree_indices...)
+            display(test_sets_avi.O_evaluations)
+            display(sets.O_degree_indices)
+            display(sets.O_evaluations)
+            border_test_purged = reconstruct_border(test_sets_avi.border_evaluations_raw[2], 
+            test_sets_avi.O_evaluations[:, sets.O_degree_indices[i]:end],
+            sets.non_purging_indices[i])  
+
+            append!(test_sets_avi.border_evaluations_purged, [border_test_purged])
+
+            update_G(test_sets_avi, sets.G_coefficient_vectors[i+1])
+            if i < size(sets.O_evaluations, 2)
+                test_sets_avi.O_evaluations = hcat(test_sets_avi.O_evaluations, border_test_purged[:, sets.O_indices[i]])
+            end
+
+            i +=1
+        end
+    end
+    return test_sets_avi.G_evaluations, test_sets_avi    
+end
+
+
+"""reconstructs border for O_test"""
+function reconstruct_border(O1_test::Matrix{Float64}, O_test::Matrix{Float64}, non_purging_indices::Vector{Int64}; 
+        X_test::Matrix{Float64}=zeros(Float64, 0, 0))
+    if size(X_test) == (0, 0)
+        O1_test_tile = tile(O1_test, size(O_test, 2))[:, non_purging_indices]
+        O_test_repeat = repeat(O_test', outer=size(O1_test, 2))'[:, non_purging_indices]
+        border_test = O1_test_tile .* O_test_repeat
+    else
+        border_test = X_test
+    end
+    return border_test
+end
 
 
 """
@@ -224,86 +302,4 @@ function purge(terms::Matrix{Int64}, terms_evaluated::Matrix{Float64}, purging_t
     
     indices = deleteat!(indices, purging_indices)
     return terms[:, indices], terms_evaluated[:, indices], indices
-end
-
-
-#--------------------------------------------------------------------------------------------------------
-# AVI MATRICES UPDATES
-
-
-"""
-Given A, A.T.A and (A.T.A)^-1 efficiently compute B = [A, a], B.T.B and (B.T.B)^-1.
-Necessary for fast inverse hessian boosting.
-
-"""
-function streaming_matrix_updates(A, A_squared, A_a, a, a_squared; A_squared_inv=nothing, built_in::Bool=false)
-    B_squared_inv = nothing
-
-    if built_in
-        B = hcat(A, a)
-        B_squared = B' * B
-        if A_squared_inv != nothing
-            B_squared_inv = inv(B_squared)
-        end
-    else
-        B = hcat(A, a)
-
-        b = A_a
-
-        B_squared = hcat(A_squared, b)
-        B_squared = vcat(B_squared, vcat(b, a_squared)')
-
-        if A_squared_inv != nothing 
-            # write B_squared_inv as S = | S_1, s_2|
-            #                            | s_2.T s_3|
-
-            A_squared_inv_b = A_squared_inv * b
-            b_A_squared_inv_b = (b' * A_squared_inv_b)[1]
-
-            s_2 = A_squared_inv + ((A_squared_inv_b * A_squared_inv_b') ./ (a_squared - b_A_squared_inv_b))
-            s_2 = (s_2 * b) ./ a_squared
-
-            s_3 = (1 - (b' * s_2)[1]) / a_squared
-
-            S_1 = A_squared_inv - (A_squared_inv_b * s_2')
-
-            B_squared_inv = hcat(S_1, s_2)
-            B_squared_inv = vcat(B_squared_inv, vcat(s_2, s_3)')            
-        end
-    end
-
-    return B, B_squared, B_squared_inv
-    
-end
-
-
-#---------------------------------------------------------------------------------------
-# ORACLE
-
-
-"""
-Calls ORACLE for computing coefficient vector
-
-# Arguments
-- 'oracle::String': Name of ORACLE to use
-- 'f': function to optimize
-- 'grad': gradient of f
-- 'feasible_region': feasible region over which to optimize for coefficient vector
-- 'initial_point::Vector{Float64}': starting point; must be in feasible_region
-
-# Returns
-- 'x_opt::Vector{Float64}': coefficient vector minimizing f over feasible_region
-"""
-function call_oracle(f, grad, feasible_region, initial_point::Vector{Float64}; oracle::String="BPCG")
-    if oracle == "CG"
-        x_opt, _ = frank_wolfe(f, grad, feasible_region, initial_point)
-    elseif oracle == "BCG"
-        x_opt, _ = blended_conditional_gradient(f, grad, feasible_region, initial_point)
-    elseif oracle == "BPCG"
-        x_opt, _ = FrankWolfe.blended_pairwise_conditional_gradient(f, grad, feasible_region, initial_point)
-    else
-        println("Oracle not implemented.")
-        return nothing
-    end
-    return x_opt
 end
