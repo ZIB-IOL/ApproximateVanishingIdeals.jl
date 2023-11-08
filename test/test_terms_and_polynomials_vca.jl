@@ -1,6 +1,6 @@
 include("../src/auxiliary_functions.jl")
 include("../src/terms_and_polynomials_vca.jl")
-
+include("../src/vca.jl")
 using LinearAlgebra
 using Random
 using Test
