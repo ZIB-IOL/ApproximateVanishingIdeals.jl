@@ -12,7 +12,7 @@ include("../src/auxiliary_functions_avi.jl")
   for oracle in ["CG", "PCG", "BPCG"]
     m, n = rand(15:25), rand(4:10)
     X_train = rand(m, n)
-    X_train_transformed, sets = fit(X_train,oracle_type=oracle)
+    X_train_transformed, sets = fit(X_train; oracle=oracle)
     loss_list = Vector{Float64}([])
     for col in 1:size(sets.G_evaluations, 2)
       cur_col = sets.G_evaluations[:, col]
