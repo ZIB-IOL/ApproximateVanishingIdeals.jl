@@ -1,4 +1,4 @@
-include("../src/terms_and_polynoms_vca.jl");
+include("../src/terms_and_polynomials_vca.jl");
 include("../src/vca.jl");
 include("../src/auxiliary_functions.jl");
 
