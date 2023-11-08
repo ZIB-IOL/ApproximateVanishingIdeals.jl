@@ -54,6 +54,7 @@ function conditional_gradients(oracle_type::String,
         x0 = l1_projection(solution; radius=tau-1)
     else
         x0 = compute_extreme_point(region, zeros(Float64, n))
+        x0 = Vector(x0)
     end
     
     if inverse_hessian_boost == "weak"
@@ -64,6 +65,7 @@ function conditional_gradients(oracle_type::String,
         
         if loss <= psi
             x0 = compute_extreme_point(region, zeros(Float64, n))
+            x0 = Vector(x0)
             tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
             tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
             
