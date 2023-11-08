@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
 Creates and returns objective function, gradient and solution (through inversion) w.r.t. L2 loss.
 
