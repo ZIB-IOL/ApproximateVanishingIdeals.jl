@@ -78,7 +78,7 @@ function conditional_gradients(oracle_type::String,
                    
         end
     else    
-        coefficient_vector = oracle(f, grad!, region, x0; epsilon=epsilon)
+        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
         coefficient_vector = vcat(coefficient_vector, [1])
     
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
