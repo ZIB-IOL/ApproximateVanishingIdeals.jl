@@ -4,8 +4,8 @@ println("running tests...")
 println("-----------------------------------------------------------")
 start_time = time()
 
-tests = filter(x -> startswith(x, "test_"), readdir("test"))
-@testset verbose = true "Test suite for AAPPR" begin
+tests = filter(x -> startswith(x, "test_"), readdir("../test"))
+@testset verbose = true "Test suite for AVI" begin
     for test in tests
         include(test)
     end
