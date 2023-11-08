@@ -5,6 +5,7 @@ include("../src/oracle_avi.jl")
 include("../src/auxiliary_functions.jl")
 include("../src/terms_and_polynomials.jl")
 include("../src/objective_functions.jl")
+include("../src/auxiliary_functions_avi.jl")
 
 
 @testset "Test suite for fit" begin
