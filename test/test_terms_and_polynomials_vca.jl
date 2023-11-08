@@ -1,5 +1,5 @@
-include("auxiliary_functions.jl")
-include("terms_and_polynomials_vca.jl")
+include("../src/auxiliary_functions.jl")
+include("../src/terms_and_polynomials_vca.jl")
 
 using LinearAlgebra
 using Random
