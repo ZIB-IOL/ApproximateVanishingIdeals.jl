@@ -1,8 +1,12 @@
 using Test
+using FrankWolfe
 
 include("../src/auxiliary_functions.jl")
 include("../src/terms_and_polynomials.jl")
-
+include("../src/oracle_constructors.jl") 
+include("../src/border_construction.jl")
+include("../src/objective_functions.jl")
+include("../src/auxiliary_functions_avi.jl")
 
 @testset "Test suite for update_coefficient_vectors" begin
   G_coefficient_vectors = reshape([1, 2, 0], 3, 1)
