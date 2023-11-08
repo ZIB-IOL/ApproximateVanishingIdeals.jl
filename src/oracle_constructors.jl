@@ -1,4 +1,5 @@
 using LinearAlgebra
+using FrankWolfe
 
 """
 Returns coefficient_vector and loss found through CG-based algorithm fit to 'data'.
