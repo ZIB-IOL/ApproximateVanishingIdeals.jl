@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
 Creates OAVI feature transformation fitted to X_train
 
