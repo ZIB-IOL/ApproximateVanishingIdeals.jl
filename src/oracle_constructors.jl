@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
 Returns coefficient_vector and loss found through CG-based algorithm fit to 'data'.
 
