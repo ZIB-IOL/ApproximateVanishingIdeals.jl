@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
 Given A, A.T.A and (A.T.A)^-1 efficiently compute B = [A, a], B.T.B and (B.T.B)^-1.
 Necessary for fast inverse hessian boosting.
