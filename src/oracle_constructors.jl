@@ -49,7 +49,7 @@ function conditional_gradients(oracle_type::String,
     
     region = FrankWolfe.LpNormLMO{1}(tau-1)
     
-    if invese_hessian_boost in ["weak", "full"]
+    if inverse_hessian_boost in ["weak", "full"]
         x0 = l1_projection(solution; radius=tau-1)
     else
         x0 = compute_extreme_point(region, zeros(Float64, n))
