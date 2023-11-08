@@ -9,7 +9,7 @@ using Test
 @testset "Testing suite for apply_V_transformation" begin
     for i in 1:10
         X_train = rand(i, 5)
-        X_train_transformed, sets_VCA = fit(X_train)
+        X_train_transformed, sets_VCA = fit_vca(X_train)
         X_transformed, _ = apply_V_transformation(sets_VCA, X_train)
         X_transformed = abs.(X_transformed)
         @test all(X_train_transformed .- X_transformed .<= 1.0e-10)
