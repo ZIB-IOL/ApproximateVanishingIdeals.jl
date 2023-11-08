@@ -1,10 +1,10 @@
 using Test
 using Random
 
-include("oracle_avi.jl")
-include("auxiliary_functions.jl")
-include("terms_and_polynomials.jl")
-include("objective_functions.jl")
+include("../src/oracle_avi.jl")
+include("../src/auxiliary_functions.jl")
+include("../src/terms_and_polynomials.jl")
+include("../src/objective_functions.jl")
 
 
 @testset "Test suite for fit" begin
