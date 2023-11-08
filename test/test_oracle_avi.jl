@@ -29,7 +29,7 @@ end;
   radius_1 = 2.5
   radius_2 = 3.0
   @test norm(l1_projection(vec1), 1) ≈ 1
-  @test norm(l1_projection(vec1, radius_1), 1) ≈ radius_1
-  @test norm(l1_projection(vec1, radius_2), 1) ≈ radius_2
+  @test norm(l1_projection(vec1; radius=radius_1),1) ≈ radius_1
+  @test norm(l1_projection(vec1; radius=radius_2), 1) ≈ radius_2
 end
   
