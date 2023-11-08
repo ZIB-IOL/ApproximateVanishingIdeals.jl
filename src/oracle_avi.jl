@@ -81,7 +81,7 @@ function fit(X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}};
             
             # external constructor
             else
-                coefficent_vector, loss = oracle(data, labels; orcl_kwargs...)
+                coefficent_vector, loss = oracle(data, term_evaluated; orcl_kwargs...)
             end
             
             if loss <= psi
