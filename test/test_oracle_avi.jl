@@ -6,7 +6,7 @@ include("../src/auxiliary_functions.jl")
 include("../src/terms_and_polynomials.jl")
 include("../src/objective_functions.jl")
 include("../src/auxiliary_functions_avi.jl")
-
+include("../src/oracle_constructors.jl")
 
 @testset "Test suite for fit" begin
   for oracle in ["CG", "PCG", "BPCG"]
