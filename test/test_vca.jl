@@ -1,6 +1,6 @@
-include("terms_and_polynoms_vca.jl");
-include("vca.jl");
-include("auxiliary_functions.jl");
+include("../src/terms_and_polynoms_vca.jl");
+include("../src/vca.jl");
+include("../src/auxiliary_functions.jl");
 
 using LinearAlgebra
 using Random
