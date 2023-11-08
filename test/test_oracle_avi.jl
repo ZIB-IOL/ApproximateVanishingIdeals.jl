@@ -9,7 +9,7 @@ include("../src/auxiliary_functions_avi.jl")
 include("../src/oracle_constructors.jl")
 
 @testset "Test suite for fit" begin
-  for oracle in ["CG", "PCG", "BPCG"]
+  for oracle in ["CG", "BCG", "BPCG"]
     m, n = rand(15:25), rand(4:10)
     X_train = rand(m, n)
     X_train_transformed, sets = fit(X_train; oracle=oracle)
