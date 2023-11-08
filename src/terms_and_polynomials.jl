@@ -185,121 +185,44 @@ function apply_G_transformation(sets::SetsOandG, X_test)
 end
 
 
-"""reconstructs border for O_test"""
-function reconstruct_border(O1_test::Matrix{Float64}, O_test::Matrix{Float64}, non_purging_indices::Vector{Int64}; 
-        X_test::Matrix{Float64}=zeros(Float64, 0, 0))
-    if size(X_test) == (0, 0)
-        O1_test_tile = tile(O1_test, size(O_test, 2))[:, non_purging_indices]
-        O_test_repeat = repeat(O_test', outer=size(O1_test, 2))'[:, non_purging_indices]
-        border_test = O1_test_tile .* O_test_repeat
-    else
-        border_test = X_test
-    end
-    return border_test
-end
-
-
 """
-constructs the border of 'terms'
+Evaluates the transformation corresponding to the polynomials in G_coefficient_vectors.
 
 # Arguments
-- 'terms::Matrix{Int64}': Matrix with monomial terms as columns
-- 'terms_evaluated::Matrix{Float64}': Matrix with evaluations of 'terms' over X
-- 'X_train::Vector{Vector{Float64}}': data
-- 'degree_1_terms::Matrix{Int64}': Matrix with degree 1 monomials as columns
-- 'degree_1_terms_evaluated::Matrix{Float64}': evaluations of 'degree_1_terms' over X
-- 'purging_terms::Matrix{Int64}': purge terms in 'terms' divisible by any of these 
+- 'sets::SetsOandG': instance of SetsOandG, containing information on transformation
 
 # Returns
-- 'border_terms_raw::Matrix{Int64}': non-purged border constructed from 'terms'
-- 'border_evaluations_raw::Matrix{Float64}': non-purged evaluations of border terms over X
-- 'non_purging_indices::Vector{Int64}': array of non-purging indices
+- 'total_number_of_zeros::Int64': Sum of all zero entries in coefficient_vectors in G_coefficient_vectors.
+- 'total_number_of_entries::Int64': Total number of entries in coefficient_vectors in G_coefficient_vectors.
+- 'avg_sparsity::Float64': The average sparsity of coefficient_vectors in G_coefficient_vectors.
+- 'number_of_polynomials::Int64': Number of polynomials in G.
+- 'number_of_terms::Int64': Number of terms in O.
+- 'degree::Float64': Average degree of polynomials in G.
 """
-function construct_border(terms::Matrix{Int64}, terms_evaluated::Matrix{Float64}, X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}, 
-    degree_1_terms::Matrix{Int64}=zeros(Int64, 0, 0), degree_1_terms_evaluated::Matrix{Float64}=zeros(Float64, 0, 0), 
-    purging_terms::Matrix{Int64}=zeros(Int64, 0, 0))
-
-    if typeof(X_train) != Matrix{Float64}
-        X_train = vecvec_to_mat(X_train)
-    end
-        
-    dim = length(X_train[1, :])
-    
-    if size(degree_1_terms, 2) == 0
-        
-        border_terms_raw = 1 * Matrix(I, dim, dim)
-        border_evaluations_raw = X_train
-    
-    else
-        # terms
-        len_deg1 = size(degree_1_terms, 2)
-        len_terms = size(terms, 2)
-        
-        terms_repeat = transpose(repeat(terms', outer=len_deg1))
-        degree_1_tile = tile(degree_1_terms, len_terms)
-        
-        border_terms_raw = degree_1_tile + terms_repeat
-        
-        # evaluations
-        len_deg1_eval = size(degree_1_terms_evaluated, 2)
-        len_terms_eval = size(terms_evaluated, 2)
-        
-        terms_evaluated_repeat = transpose(repeat(terms_evaluated', outer=len_deg1_eval))
-        degree_1_evaluated_tile = tile(degree_1_terms_evaluated, len_terms_eval)
-        
-        border_evaluations_raw = degree_1_evaluated_tile .* terms_evaluated_repeat
-        
-    end
-    
-    border_terms_raw, border_evaluations_raw, _ = deg_lex_sort(border_terms_raw, border_evaluations_raw)
-    
-    border_terms_purged, border_evaluations_purged, unique_indices = get_unique_columns(
-        border_terms_raw, border_evaluations_raw)
-    
-    if size(purging_terms, 2) != 0
-        border_terms_purged, border_evaluations_purged, unique_indices_2 = purge(
-            border_terms_purged, border_evaluations_purged, purging_terms)
-        
-        if unique_indices_2 != []
-            non_purging_indices = [unique_indices[i] for i in unique_indices_2]
-        else
-            non_purging_indices = unique_indices
-        end
-    else
-        non_purging_indices = unique_indices
-    end
-    
-    return border_terms_raw, border_evaluations_raw, non_purging_indices
-    
-end
-
-
-"""
-purges each term in 'terms' that is divisible by at least one term 'purging_terms'
-
-# Arguments
-- 'terms::Matrix{Int64}': Matrix with monomial terms as columns
-- 'terms_evaluated::Matrix{Float64}': evaluations of 'terms' over data
-- 'purging_terms::Matrix{Int64}': Matrix with purging terms as columns
-
-# Returns
-- 'terms[:, inidces]::Matrix{Int64}': purged version of terms
-- 'terms_evaluated[:, indices]::Matrix{Float64}': purged evaluations
-- 'indices::Vector{Int64}': array with non-purging indices
-"""
-function purge(terms::Matrix{Int64}, terms_evaluated::Matrix{Float64}, purging_terms::Matrix{Int64})
-    purging_indices = []
-    indices = [x for x in 1:size(terms, 2)]
-    
-    for i in 1:size(terms, 2)
-        for j in 1:size(purging_terms, 2)
-            if all(terms[:, i] - purging_terms[:, j] .>= 0)
-                append!(purging_indices, i)
-                break
+function evaluate_transformation(sets::SetsOandG)
+    number_of_polynomials, total_number_of_zeros, total_number_of_entries, avg_sparsity, degree = 0, 0, 0, 0.0, 0
+    for i in 1:size(sets.G_coefficient_vectors, 1)
+        coefficient_vectors = sets.G_coefficient_vectors[i]
+        if coefficient_vectors != nothing && size(coefficient_vectors, 2) > 0
+            degree += (i-1) * size(coefficient_vectors, 2)  # (i-1) because we start with degree 0 but julia indexing starts at 1
+            indices = find_last_non_zero_entries(coefficient_vectors)
+            for j in 1:size(coefficient_vectors, 2)
+                poly = coefficient_vectors[1:indices[j], j]
+                number_of_entries = size(poly, 1) - (j-1)  
+                number_non_zeros = sum(poly .!= 0)
+                number_of_zeros = max(number_of_entries - number_non_zeros, 0)
+                sparsity = number_of_zeros / max(number_of_entries - 1, 1)
+                total_number_of_entries += number_of_entries
+                total_number_of_zeros += number_of_zeros
+                avg_sparsity += sparsity
+                number_of_polynomials += 1                
             end
         end
     end
-    
-    indices = deleteat!(indices, purging_indices)
-    return terms[:, indices], terms_evaluated[:, indices], indices
+    if number_of_polynomials > 0
+        avg_sparsity /= number_of_polynomials
+        degree /= number_of_polynomials
+    end
+    number_of_terms = size(sets.O_evaluations, 2)
+    return total_number_of_zeros, total_number_of_entries, avg_sparsity, number_of_polynomials, number_of_terms, degree    
 end
