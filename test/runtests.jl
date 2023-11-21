@@ -4,10 +4,15 @@ println("running tests...")
 println("-----------------------------------------------------------")
 start_time = time()
 
-tests = filter(x -> startswith(x, "test_"), readdir("test"))
+dir = try
+    readdir("test")
+catch
+    readdir()
+end
+tests = filter(x -> startswith(x, "test_"), dir)
 @testset verbose = true "Test suite for AVI" begin
     for test in tests
-        include(test)
+    include(test)
     end
 end
 elapsed_time = time() - start_time
