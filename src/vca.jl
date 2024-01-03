@@ -1,5 +1,3 @@
-using LinearAlgebra
-
 """
 This function creates and applies a VCA transformation fitted to X.
 

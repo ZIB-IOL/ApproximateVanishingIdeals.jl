@@ -1,4 +1,4 @@
-using LinearAlgebra
+    using LinearAlgebra
 
 
 """reconstructs border for O_test"""
@@ -39,7 +39,7 @@ function construct_border(terms::Matrix{Int64}, terms_evaluated::Matrix{Float64}
         X_train = vecvec_to_mat(X_train)
     end
         
-    dim = length(X_train[1, :])
+    dim = size(X_train, 2)  
     
     if size(degree_1_terms, 2) == 0
         
@@ -51,15 +51,17 @@ function construct_border(terms::Matrix{Int64}, terms_evaluated::Matrix{Float64}
         len_deg1 = size(degree_1_terms, 2)
         len_terms = size(terms, 2)
         
+        # tile and repeat for creating next degree monomials
         terms_repeat = transpose(repeat(terms', outer=len_deg1))
         degree_1_tile = tile(degree_1_terms, len_terms)
-        
-        border_terms_raw = degree_1_tile + terms_repeat
+    
+        border_terms_raw = degree_1_tile .+ terms_repeat
         
         # evaluations
         len_deg1_eval = size(degree_1_terms_evaluated, 2)
         len_terms_eval = size(terms_evaluated, 2)
         
+        # tile and repeat for creating next degree monomial evaluations
         terms_evaluated_repeat = transpose(repeat(terms_evaluated', outer=len_deg1_eval))
         degree_1_evaluated_tile = tile(degree_1_terms_evaluated, len_terms_eval)
         

@@ -1,5 +1,3 @@
-using LinearAlgebra
-
 """
 Creates and keeps track of sets O and G for OAVI.
 """
@@ -84,34 +82,7 @@ updates O sets
 function update_O(sets, O_terms, O_evaluations, O_indices)
     sets.O_terms = hcat(sets.O_terms, O_terms)
     sets.O_evaluations = hcat(sets.O_evaluations, O_evaluations)
-    sets.O_indices = append!(sets.O_indices, O_indices)
-end
-
-
-"""
-Appends polynomial with coefficient vector based on coefficient_vector and term to G_coefficient_vectors.
-"""
-function update_coefficient_vectors(G_coefficient_vectors, coefficient_vector; first=false)
-    if G_coefficient_vectors == nothing
-        G_coefficient_vectors = coefficient_vector
-    else
-        if first
-            lt_indices = find_first_non_zero_entries(G_coefficient_vectors)
-        else
-            lt_indices = find_last_non_zero_entries(G_coefficient_vectors)
-        end
-        
-        removable_set = Set(lt_indices)
-        
-        indices = [x for x in 1:size(G_coefficient_vectors, 1) if x ∉ removable_set]
-        
-        if length(indices) == size(coefficient_vector, 1)
-            updated_coefficient_vector = zeros(size(G_coefficient_vectors, 1), 1)
-            updated_coefficient_vector[indices, :] = coefficient_vector
-            G_coefficient_vectors = hcat(G_coefficient_vectors, updated_coefficient_vector)
-        end
-    end
-    return G_coefficient_vectors
+    append!(sets.O_indices, [O_indices])
 end
 
 
@@ -119,15 +90,15 @@ end
 updates G sets
 """
 function update_G(sets, G_coefficient_vectors=nothing)
-    if G_coefficient_vectors != nothing
-        if size(sets.G_evaluations, 2) == 0
+    if G_coefficient_vectors !== nothing
+        if size(sets.G_evaluations, 2) === 0
             sets.G_evaluations = hcat(sets.O_evaluations, sets.border_evaluations_purged[end]) * G_coefficient_vectors
         else
             current_G_evaluations = hcat(sets.O_evaluations, sets.border_evaluations_purged[end]) * G_coefficient_vectors
             sets.G_evaluations = hcat(sets.G_evaluations, current_G_evaluations)
         end
     end
-    sets.G_coefficient_vectors = append!(sets.G_coefficient_vectors, [G_coefficient_vectors])
+    append!(sets.G_coefficient_vectors, [G_coefficient_vectors])
 end
 
 
@@ -135,8 +106,8 @@ end
 updates leading terms
 """
 function update_leading_terms(sets, leading_terms=nothing)
-    if sets.leading_terms == nothing
-        if leading_terms != nothing
+    if sets.leading_terms === nothing
+        if leading_terms !== nothing
             sets.leading_terms = leading_terms
         end
     else
@@ -161,12 +132,9 @@ function apply_G_transformation(sets::SetsOandG, X_test)
     end
     
     # higher degree border
-    if sets.O_degree_indices != []  # only if higher degrees need to be considered
+    if sets.O_degree_indices !== []  # only if higher degrees need to be considered
         i = 2
         while i < max(sets.O_degree_indices...)
-            display(test_sets_avi.O_evaluations)
-            display(sets.O_degree_indices)
-            display(sets.O_evaluations)
             border_test_purged = reconstruct_border(test_sets_avi.border_evaluations_raw[2], 
             test_sets_avi.O_evaluations[:, sets.O_degree_indices[i]:end],
             sets.non_purging_indices[i])  

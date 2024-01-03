@@ -4,14 +4,14 @@ using LinearAlgebra
 finds unique columns in matrix x1 and returns only unique elements in x1 as well as corresponding columns in x2.
 """
 function get_unique_columns(x1::Matrix, x2::Matrix=zeros(0, 0))
-    #cx1, cx2 = copy(x1), copy(x2)
-    sorted_x1, sorted_x2, sorted_list = deg_lex_sort(x1, x2)
+    cx1, cx2 = copy(x1), copy(x2)
+    sorted_x1, sorted_x2, sorted_list = deg_lex_sort(cx1, cx2)
     unique_indices = unique(i -> sorted_x1[:, i], 1:size(sorted_x1, 2))
     x1_unique = sorted_x1[:, unique_indices]
     if size(x2) != (0, 0)
         x2_unique = sorted_x2[:, unique_indices]
     else
-        x2_unique = x2
+        x2_unique = cx2
     end
 
     return x1_unique, x2_unique, unique_indices

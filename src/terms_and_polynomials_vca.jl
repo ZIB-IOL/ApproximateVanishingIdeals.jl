@@ -185,3 +185,4 @@ function evaluate_transformation(sets::SetsVCA)
     number_of_terms = size(F_to_matrix(sets), 2)
     return (total_number_of_zeros, total_number_of_entries, avg_sparsity, number_of_polynomials, number_of_terms, degree)
 end;
+

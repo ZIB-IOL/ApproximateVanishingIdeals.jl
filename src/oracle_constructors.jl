@@ -1,6 +1,3 @@
-using LinearAlgebra
-using FrankWolfe
-
 """
 Returns coefficient_vector and loss found through CG-based algorithm fit to 'data'.
 
@@ -80,7 +77,7 @@ function conditional_gradients(oracle_type::String,
     else    
         coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
         coefficient_vector = vcat(coefficient_vector, [1])
-    
+       
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
     end        
     return coefficient_vector, loss
@@ -102,7 +99,7 @@ Runs ABM algorithm to find coefficient vector and computes loss.
 
 # Returns
 - 'coefficient_vector::Vector{Float64}': coefficient vector minimizing ABM optimization problem
-- 'loss::Float64': loss using 'coefficient_vector' 
+- 'loss::Float64': loss w.r.t. 'coefficient_vector' 
 """
 function abm(data::Union{Matrix{Float64}, Matrix{Int64}}, 
         labels::Union{Vector{Float64}, Vector{Int64}},
