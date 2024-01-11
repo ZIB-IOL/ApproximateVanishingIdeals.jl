@@ -1,5 +1,3 @@
-using LinearAlgebra
-
 """
 Creates and returns objective function, gradient and solution (through inversion) w.r.t. L2 loss.
 
@@ -65,14 +63,14 @@ function L2Loss(data::Union{Matrix{Float64}, Matrix{Int64}},
     """
     objective function
     """
-    function evaluate_function(x::Vector{Float64})
+    function evaluate_function(x)
         return ((1 / 2) * (x' * A_squared * x) + (A_b' * x) + (1 / 2) * b_squared)
     end
         
     """
     gradient of f
     """
-    function evaluate_gradient!(storage::Vector{Float64}, x::Vector{Float64})
+    function evaluate_gradient!(storage, x)
         return storage .= A_squared * x + A_b
     end
     

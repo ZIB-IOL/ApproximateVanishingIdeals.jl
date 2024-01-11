@@ -13,6 +13,8 @@ border_terms_purged
 border_evaluations_purged
 # indices such that border_terms_raw[i][non_purging_indices[i], :] = border_terms_purged[i]
 non_purging_indices   
+# indices to get deg-lex ordered border_terms when first computing them
+permutations
 
 # array of O terms by degree
 O_terms
@@ -43,21 +45,27 @@ function construct_SetsOandG(X_train)
     border_terms_purged = Vector{Any}([nothing])
     border_evaluations_purged = Vector{Any}([nothing])
     non_purging_indices = Vector{Any}([nothing])
+    permutations = []
     
     # O sets
+    
+    # Matrix with O_terms
     O_terms = zeros(Int64, n, 1)
+    # Matrix with evaluations of O_terms
     O_evaluations = ones(Float64, m, 1)
+    # Vector of vectors with indices of border_terms appended to O
     O_indices = []
-    O_degree_indices = [2] # degree 1 always starts at index 2
+    # Vector of starting indices of each degree
+    O_degree_indices = [2]  # degree 1 always starts at index 2
     
     # G sets
-    G_coefficient_vectors = Vector{Any}([nothing])
+    G_coefficient_vectors = Vector{Any}([nothing])  # no vanishing polynomials of degree 0
     G_evaluations = zeros(Float64, m, 0)
     
     # leading terms
     leading_terms = nothing
     
-    return SetsOandG(border_terms_raw, border_evaluations_raw, border_terms_purged, border_evaluations_purged, non_purging_indices,
+    return SetsOandG(border_terms_raw, border_evaluations_raw, border_terms_purged, border_evaluations_purged, non_purging_indices, permutations,
                     O_terms, O_evaluations, O_indices, O_degree_indices,
                     G_coefficient_vectors, G_evaluations,
                     leading_terms)
@@ -90,8 +98,8 @@ end
 updates G sets
 """
 function update_G(sets, G_coefficient_vectors=nothing)
-    if G_coefficient_vectors !== nothing
-        if size(sets.G_evaluations, 2) === 0
+    if G_coefficient_vectors != nothing
+        if size(sets.G_evaluations, 2) == 0
             sets.G_evaluations = hcat(sets.O_evaluations, sets.border_evaluations_purged[end]) * G_coefficient_vectors
         else
             current_G_evaluations = hcat(sets.O_evaluations, sets.border_evaluations_purged[end]) * G_coefficient_vectors
@@ -106,13 +114,19 @@ end
 updates leading terms
 """
 function update_leading_terms(sets, leading_terms=nothing)
-    if sets.leading_terms === nothing
-        if leading_terms !== nothing
+    if sets.leading_terms == nothing
+        if leading_terms != nothing
             sets.leading_terms = leading_terms
         end
     else
         sets.leading_terms = hcat(sets.leading_terms, leading_terms)
     end
+end
+
+
+"""updates permutations"""
+function update_permutations(sets, permutation)
+    append!(sets.permutations, [permutation])
 end
 
 
@@ -125,29 +139,37 @@ function apply_G_transformation(sets::SetsOandG, X_test)
     
     # degree-1 border
     i = 1
+    
+    # update border with deg 1 evaluations
     append!(test_sets_avi.border_evaluations_purged, [X_test])
+    
+    # update G with deg 1
     update_G(test_sets_avi, sets.G_coefficient_vectors[i+1])
-    if i < size(sets.O_evaluations, 2)
+    
+    if i <= length(sets.O_degree_indices)
         test_sets_avi.O_evaluations = hcat(test_sets_avi.O_evaluations, X_test[:, sets.O_indices[i]])
     end
     
     # higher degree border
-    if sets.O_degree_indices !== []  # only if higher degrees need to be considered
-        i = 2
-        while i < max(sets.O_degree_indices...)
-            border_test_purged = reconstruct_border(test_sets_avi.border_evaluations_raw[2], 
-            test_sets_avi.O_evaluations[:, sets.O_degree_indices[i]:end],
-            sets.non_purging_indices[i])  
-
-            append!(test_sets_avi.border_evaluations_purged, [border_test_purged])
-
-            update_G(test_sets_avi, sets.G_coefficient_vectors[i+1])
-            if i < size(sets.O_evaluations, 2)
-                test_sets_avi.O_evaluations = hcat(test_sets_avi.O_evaluations, border_test_purged[:, sets.O_indices[i]])
-            end
-
-            i +=1
+    i = 2
+    while i <= length(sets.O_degree_indices) + 1
+        border_test_purged = reconstruct_border(test_sets_avi.border_evaluations_raw[2], 
+                                                test_sets_avi.O_evaluations[:, sets.O_degree_indices[i-1]:end],
+                                                sets.non_purging_indices[i+1],
+                                                sets.permutations[i]
+                                                )  
+        
+        # update purged border evaluations
+        append!(test_sets_avi.border_evaluations_purged, [border_test_purged])
+        
+        # update G with higher deg
+        update_G(test_sets_avi, sets.G_coefficient_vectors[i+1])
+        
+        if i < length(sets.O_indices) + 1
+            # update O_evaluations with non-leading terms
+            test_sets_avi.O_evaluations = hcat(test_sets_avi.O_evaluations, border_test_purged[:, sets.O_indices[i]])
         end
+        i += 1
     end
     return test_sets_avi.G_evaluations, test_sets_avi    
 end

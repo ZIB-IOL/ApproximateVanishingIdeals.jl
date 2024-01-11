@@ -36,12 +36,14 @@ function fit(X_train::Matrix{Float64};
         
         # for deg 1 no deg_1_terms computed yet, for higher degree need most recent terms and evaluations  
         if degree == 1
-            border_terms_raw, border_evaluations_raw, non_purging_indices = construct_border(sets.O_terms, sets.O_evaluations, X_train)
+            border_terms_raw, border_evaluations_raw, non_purging_indices, raw_perm = construct_border(sets.O_terms, sets.O_evaluations, X_train)
         else
             deg_idx = sets.O_degree_indices[degree-1]
-            border_terms_raw, border_evaluations_raw, non_purging_indices = construct_border(sets.O_terms[:, deg_idx:end], sets.O_evaluations[:, deg_idx:end], X_train, 
+            border_terms_raw, border_evaluations_raw, non_purging_indices, raw_perm = construct_border(sets.O_terms[:, deg_idx:end], sets.O_evaluations[:, deg_idx:end], X_train, 
             sets.border_terms_raw[2], sets.border_evaluations_raw[2])
         end
+        
+        update_permutations(sets, raw_perm)
         
         border_terms = border_terms_raw[:, non_purging_indices]
         border_evaluations = border_evaluations_raw[:, non_purging_indices]
@@ -71,17 +73,17 @@ function fit(X_train::Matrix{Float64};
             data_term_evaluated = data' * term_evaluated
             term_evaluated_squared = term_evaluated' * term_evaluated
             
-            # built-in constructor Frank-Wolfe
+            # built-in Frank-Wolfe oracle
             if oracle in ["CG", "BCG", "BPCG"]
                 coefficient_vector, loss = conditional_gradients(oracle, data, term_evaluated, 
                 lambda, data_squared, data_term_evaluated, term_evaluated_squared; data_squared_inverse=data_squared_inverse, 
                 psi=psi, epsilon=epsilon, tau=1. * tau, inverse_hessian_boost=inverse_hessian_boost)
              
-            # built-in constructor 
+            # built-in ABM
             elseif oracle == "ABM"
                 coefficient_vector, loss = abm(data, labels, data_squared, data_term_evaluated, term_evaluated_squared)
             
-            # external constructor
+            # external oracle
             else
                 coefficient_vector, loss = oracle(data, labels; orcl_kwargs...)
             end

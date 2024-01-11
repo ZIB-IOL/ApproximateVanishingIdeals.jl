@@ -4,6 +4,8 @@ using LinearAlgebra
 using FrankWolfe
 using Random
 
+export fit, fit_vca
+
 include("auxiliary_functions.jl")
 include("auxiliary_functions_avi.jl")
 include("border_construction.jl")
@@ -14,4 +16,4 @@ include("terms_and_polynomials.jl")
 include("terms_and_polynomials_vca.jl")
 include("vca.jl")
 
-end # module AVI
+end 
