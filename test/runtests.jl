@@ -1,4 +1,7 @@
 using Test
+using FrankWolfe
+using LinearAlgebra
+using Random
 
 println("running tests...")
 println("-----------------------------------------------------------")
