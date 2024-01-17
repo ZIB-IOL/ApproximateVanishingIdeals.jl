@@ -16,3 +16,8 @@ When applying the transformation $\mathcal{G}$ found by OAVI, we need to reconst
 ```@docs
 reconstruct_border
 ```
+
+## Index
+```@index
+Pages=["3_border.md"]
+```
