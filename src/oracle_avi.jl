@@ -5,21 +5,29 @@ Creates OAVI feature transformation fitted to X_train
 - 'X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}': training data
 - 'max_degree::Int64': max degree of polynomials computed (default 10)
 - 'psi::Float64': vanishing extent (default 0.1)
-- 'epsilon::Float64': accuracy for convex optimizer (default 0.001)
+- 'epsilon::Float64': accuracy for convex optimizer (default 1.0e-7)
 - 'tau::Union{Float64, Int64}': upper bound on norm of coefficient vector
 - 'lambda::Float64': regularization parameter
 - 'oracle::Union{String, <:Function}': string denoting which predefined constructor to use OR constructor function.
                                         (external constructor function MUST have 'data' and 'labels' as varargs)
-- 'orcl_kwargs::Vector': Array containing keyword arguments for external constructor functions
+- 'oracle_kwargs::Vector': Array containing keyword arguments for external constructor functions
 
 # Returns
 - 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
 - 'sets::SetsOandG': instance of 'SetsOandG' keeping track of important sets 
 """ 
-function fit(X_train::Matrix{Float64}; 
-        max_degree::Int64=10, psi::Float64=0.1, epsilon::Float64=0.001, tau::Union{Float64, Int64}=0.,
-        lambda::Float64=0., oracle::Union{String, <:Function}="CG", max_iters::Int64=10000, 
-        inverse_hessian_boost::String="false", orcl_kwargs::Vector=[]) 
+function fit(
+            X_train::Matrix{Float64}; 
+            max_degree::Int64=10, 
+            psi::Float64=0.1, 
+            epsilon::Float64=1.0e-7, 
+            tau::Union{Float64, Int64}=0.,
+            lambda::Float64=0., 
+            oracle::Union{String, <:Function}="CG", 
+            max_iters::Int64=10000, 
+            inverse_hessian_boost::String="false", 
+            oracle_kwargs::Vector=[]
+            ) 
 
     if tau === 0.
         D = ceil(- log(psi)/log(4))
@@ -77,15 +85,15 @@ function fit(X_train::Matrix{Float64};
             if oracle in ["CG", "BCG", "BPCG"]
                 coefficient_vector, loss = conditional_gradients(oracle, data, term_evaluated, 
                 lambda, data_squared, data_term_evaluated, term_evaluated_squared; data_squared_inverse=data_squared_inverse, 
-                psi=psi, epsilon=epsilon, tau=1. * tau, inverse_hessian_boost=inverse_hessian_boost)
+                psi=psi, epsilon=epsilon, tau=1. * tau, inverse_hessian_boost=inverse_hessian_boost, max_iters=max_iters)
              
             # built-in ABM
             elseif oracle == "ABM"
-                coefficient_vector, loss = abm(data, labels, data_squared, data_term_evaluated, term_evaluated_squared)
+                coefficient_vector, loss = abm(data, term_evaluated, data_squared, data_term_evaluated, term_evaluated_squared)
             
             # external oracle
             else
-                coefficient_vector, loss = oracle(data, labels; orcl_kwargs...)
+                coefficient_vector, loss = oracle(data, term_evaluated; oracle_kwargs...)
             end
             
             # if polynomial vanishes append to G, otherwise append leading term to O

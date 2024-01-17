@@ -1,5 +1,3 @@
-using LinearAlgebra
-
 """
 finds unique columns in matrix x1 and returns only unique elements in x1 as well as corresponding columns in x2.
 """
@@ -16,6 +14,7 @@ function get_unique_columns(x1::Matrix, x2::Matrix=zeros(0, 0))
 
     return x1_unique, x2_unique, unique_indices
 end
+
 
 """
 sorts matrix1 degree-lexicographically and matrix2 accordingly
@@ -41,44 +40,7 @@ Computes sum (degree) of columns (terms) in A and returns output as (1 x size(A,
 """
 function compute_degree(A::Matrix{Int64})
     return sum(A, dims=1)
-end
-
-                
-"""
-converts Array of Arrays to Matrix where A[i] becomes row [i] in output Matrix. 
-If optional parameter 'arr_is_col' = 1 convert arrays into columns instead of rows.
-"""
-function vecvec_to_mat(A; arr_is_col::Int64=0)
-    elem_type = eltype(A[1])
-    A_mat = zeros(elem_type, length(A), length(A[1]))
-    @inbounds for i in eachindex(A)
-        A_mat[i, :] = A[i]
-    end
-    
-    if arr_is_col == 0
-        return A_mat
-    end
-    
-    if arr_is_col == 1
-        return A_mat'
-    end
-    
-    println("Argument 'arr_is_col' needs to be in {0, 1}.")
-    return nothing
-end
-
-
-"""
-tiles each column in A k-times
-"""
-function tile(A, k)
-    tile_A = zeros(typeof(A[1]), size(A, 1), 0)
-    @inbounds for i in 1:size(A, 2)
-        tile_Ai = reshape(repeat(A[:, i], k), size(A, 1), k)
-        tile_A = hcat(tile_A, tile_Ai)
-    end
-    return tile_A
-end                            
+end                     
 
 
 """

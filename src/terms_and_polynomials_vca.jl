@@ -131,7 +131,7 @@ end;
 
 
 """constructs the border for current state of the algorithm."""
-function construct_border(sets::SetsVCA; degree::Int64=1)
+function construct_border_vca(sets::SetsVCA; degree::Int64=1)
     if degree != 1
         F1 = sets.Fs[2]
         F_current = sets.Fs[end]

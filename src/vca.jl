@@ -10,14 +10,16 @@ This function creates and applies a VCA transformation fitted to X.
 - 'X_train_transformed::Matrix{Float64}': X transformed according to transformation found by VCA
 - 'sets_vca::SetsVCA': instance of SetsVCA containing relevant sets for VCA
 """
-function fit_vca(X::Matrix{Float64};
-    psi::Float64=0.1,
-    max_degree::Int64=10)
+function fit_vca(
+                X::Matrix{Float64};
+                psi::Float64=0.1,
+                max_degree::Int64=10
+                )
         
     sets_vca = construct_SetsVCA(X)
     degree = 1
     while degree < max_degree
-        border = construct_border(sets_vca; degree=degree)
+        border = construct_border_vca(sets_vca; degree=degree)
         
         update_C(sets_vca, border)
         
@@ -46,7 +48,8 @@ end
 
 
 """
-Performs FindRangeNull (using SVD) for VCA.
+Performs FindRangeNull (using SVD) for VCA. 
+Reference: https://proceedings.mlr.press/v28/livni13.html
 
 # Arguments
 - 'F::Union{Matrix{Float64}, Matrix{Int64}}': TBD

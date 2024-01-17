@@ -19,7 +19,8 @@ Returns coefficient_vector and loss found through CG-based algorithm fit to 'dat
 - 'coefficient_vector::Vector{Float64}': coefficient_vector minimizing L2Loss over L1Ball
 - 'loss::Float64': loss w.r.t. 'coefficient_vector'
 """
-function conditional_gradients(oracle_type::String, 
+function conditional_gradients(
+        oracle_type::String, 
         data::Union{Matrix{Float64}, Matrix{Int64}}, 
         labels::Union{Vector{Float64}, Vector{Int64}},
         lambda::Union{Float64, Int64}, 
@@ -30,13 +31,16 @@ function conditional_gradients(oracle_type::String,
         psi::Float64=0.1,
         epsilon::Float64=0.001,
         tau::Float64=1000.,
-        inverse_hessian_boost::String="false")
+        inverse_hessian_boost::String="false",
+        max_iters=10000)
     
     m, n = size(data)
     data_with_labels = hcat(data, labels)
-           
+    
+    # Create objective function and gradient
     solution, f, grad! = L2Loss(data, labels, lambda, data_squared, data_labels, labels_squared; data_squared_inverse=data_squared_inverse)
-        
+    
+    # determine oracle
     if oracle_type == "CG"
         oracle = frank_wolfe
     elseif oracle_type == "BCG"
@@ -45,8 +49,10 @@ function conditional_gradients(oracle_type::String,
         oracle = FrankWolfe.blended_pairwise_conditional_gradient
     end
     
+    # create L1 ball as feasible region
     region = FrankWolfe.LpNormLMO{1}(tau-1)
     
+    # compute starting point
     if inverse_hessian_boost in ["weak", "full"]
         x0 = l1_projection(solution; radius=tau-1)
     else
@@ -54,8 +60,9 @@ function conditional_gradients(oracle_type::String,
         x0 = Vector(x0)
     end
     
+    # run oracle to find coefficient vector
     if inverse_hessian_boost == "weak"
-        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
+        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
         coefficient_vector = vcat(coefficient_vector, [1])
     
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
@@ -63,7 +70,7 @@ function conditional_gradients(oracle_type::String,
         if loss <= psi
             x0 = compute_extreme_point(region, zeros(Float64, n))
             x0 = Vector(x0)
-            tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
+            tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iterations=max_iters)
             tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
             
             loss2 = 1/m * norm(data_with_labels * tmp_coefficient_vector, 2)^2
@@ -75,7 +82,7 @@ function conditional_gradients(oracle_type::String,
                    
         end
     else    
-        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon)
+        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iterations=max_iters)
         coefficient_vector = vcat(coefficient_vector, [1])
        
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
@@ -109,6 +116,7 @@ function abm(data::Union{Matrix{Float64}, Matrix{Int64}},
     data_with_labels = hcat(data, labels)
     m = size(data_with_labels, 1)
     
+    # prepare data for SVD and perform SVD
     if size(data_with_labels, 1) > size(data_with_labels, 2)
         data_squared_with_labels = hcat(data_squared, data_labels)
         bottom_row = vcat(data_labels, labels_squared)
@@ -119,6 +127,7 @@ function abm(data::Union{Matrix{Float64}, Matrix{Int64}},
         F = svd(data_with_labels)
     end
     
+    # extract coefficient vector
     U, S, Vt = F.U, F.S, F.Vt
     coefficient_vector = Vt[:, end]
     loss = 1/size(data, 1) * norm(data_with_labels * coefficient_vector, 2)^2

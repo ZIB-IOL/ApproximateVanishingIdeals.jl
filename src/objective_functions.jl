@@ -27,7 +27,7 @@ function L2Loss(data::Union{Matrix{Float64}, Matrix{Int64}},
     b = labels
         
     # A_squared
-    if data_squared != nothing
+    if data_squared !== nothing
         A_squared = 2/m * data_squared
     else
         A_squared = 2/m * A' * A
@@ -60,16 +60,10 @@ function L2Loss(data::Union{Matrix{Float64}, Matrix{Int64}},
         b_squared = 2/m * b' * b
     end
         
-    """
-    objective function
-    """
     function evaluate_function(x)
         return ((1 / 2) * (x' * A_squared * x) + (A_b' * x) + (1 / 2) * b_squared)
     end
-        
-    """
-    gradient of f
-    """
+
     function evaluate_gradient!(storage, x)
         return storage .= A_squared * x + A_b
     end
