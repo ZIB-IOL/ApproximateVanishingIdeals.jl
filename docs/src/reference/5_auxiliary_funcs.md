@@ -13,3 +13,8 @@ Pages = ["auxiliary_functions_avi.jl"]
 Modules = [AVI]
 Pages = ["auxiliary_functions.jl"]
 ```
+
+## Index
+```@index
+Pages = ["5_auxiliary_funcs.md"]
+```
