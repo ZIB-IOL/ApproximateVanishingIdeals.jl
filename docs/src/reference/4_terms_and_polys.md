@@ -13,4 +13,7 @@ Modules = [AVI]
 Pages = ["terms_and_polynomials_vca.jl"]
 ```
 
-
+## Index
+```@index
+Pages = ["4_terms_and_polys.md"]
+```
