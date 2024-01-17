@@ -1,3 +1,0 @@
-# create Project.toml
-
-# implement ABM and add option to use in fit()
