@@ -70,7 +70,7 @@ function conditional_gradients(
         if loss <= psi
             x0 = compute_extreme_point(region, zeros(Float64, n))
             x0 = Vector(x0)
-            tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iterations=max_iters)
+            tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
             tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
             
             loss2 = 1/m * norm(data_with_labels * tmp_coefficient_vector, 2)^2
@@ -82,7 +82,7 @@ function conditional_gradients(
                    
         end
     else    
-        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iterations=max_iters)
+        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
         coefficient_vector = vcat(coefficient_vector, [1])
        
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2

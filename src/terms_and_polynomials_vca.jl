@@ -82,7 +82,7 @@ function apply_V_transformation(sets::SetsVCA, X_test::Matrix{Float64})
     sets_VCA_test = construct_SetsVCA(X_test)
     degree = 1
     while degree <= size(sets.Cs, 1)
-        border = construct_border(sets_VCA_test; degree=degree)
+        border = construct_border_vca(sets_VCA_test; degree=degree)
         update_C(sets_VCA_test, border)
         degree += 1
         
@@ -135,7 +135,7 @@ function construct_border_vca(sets::SetsVCA; degree::Int64=1)
     if degree != 1
         F1 = sets.Fs[2]
         F_current = sets.Fs[end]
-        F1_tile = tile(F1, size(F_current, 2))
+        F1_tile = repeat(F1, inner=(1,size(F_current, 2)))
         F_current_repeat = repeat(F_current, outer=(1, size(F1, 2)))
         border = F1_tile .* F_current_repeat
     else
