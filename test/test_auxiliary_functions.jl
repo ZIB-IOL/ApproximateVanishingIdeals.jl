@@ -2,33 +2,17 @@ using Test
 
 include("../src/auxiliary_functions.jl")
 
+matrix = Matrix([[1, 2, 3, 4, 3];; 
+                 [0, 1, 2, 3, 2];; 
+                 [1, 3, 1, 2, 1];;]')
 
-@testset "Test suite for vecvec_to_mat" begin
-  vecvec1 = [[1, 2, 3], [4, 5, 6]]
-  vecvec2 = [[1, 2], [3, 4], [5, 6]]
+matrix_sorted = Matrix([[1, 3, 3, 2, 4];; 
+                        [0, 2, 2, 1, 3];; 
+                        [1, 1, 1, 3, 2];;]')
 
-  row_1 = reshape([1, 2, 3], 1, 3)
-  row_2 = reshape([4, 5, 6], 1, 3)
-  
-  mat1 = vcat(row_1, row_2)
-  mat2 = reshape([1, 2, 3, 4, 5, 6], 2, 3)
-
-  @test vecvec_to_mat(vecvec1) == mat1
-  @test vecvec_to_mat(vecvec2, arr_is_col=1) == mat2
-end
-
-
-matrix = vecvec_to_mat([[1, 2, 3, 4, 3], 
-                        [0, 1, 2, 3, 2], 
-                        [1, 3, 1, 2, 1]])
-
-matrix_sorted = vecvec_to_mat([[1, 3, 3, 2, 4], 
-                               [0, 2, 2, 1, 3], 
-                               [1, 1, 1, 3, 2]])
-
-matrix_unique = vecvec_to_mat([[1, 3, 2, 4],
-                               [0, 2, 1, 3],
-                               [1, 1, 3, 2]])
+matrix_unique = Matrix([[1, 3, 2, 4];;
+                        [0, 2, 1, 3];;
+                        [1, 1, 3, 2];;]')
 
 
 @testset "Test suite for deg_lex_sort" begin

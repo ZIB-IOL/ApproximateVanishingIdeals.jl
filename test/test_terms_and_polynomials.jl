@@ -24,12 +24,12 @@ include("../src/oracle_avi.jl")
     
   G_coefficient_vectors = update_coefficient_vectors(G_coefficient_vectors, vec1)
     
-  @test G_coefficient_vectors == vecvec_to_mat([[1., 1., 1., 1.],
-                                                [2., 0., 0., 0.],
-                                                [0., 2., 0., 0.],
-                                                [0., 0., 2., 0.],
-                                                [0., 0., 0., 2.],
-                                                [0., 0., 0., 3.]])
+  @test G_coefficient_vectors == Matrix([[1., 1., 1., 1.];;
+                                         [2., 0., 0., 0.];;
+                                         [0., 2., 0., 0.];;
+                                         [0., 0., 2., 0.];;
+                                         [0., 0., 0., 2.];;
+                                         [0., 0., 0., 3.];;]')
 end
 
 

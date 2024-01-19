@@ -31,7 +31,7 @@ update_C, construct_border, evaluate_transformation" begin
     @test sets_VCA.F_coefficient_vectors == [ones(Float64, 1, 1)]
     
     # test construct_border
-    border = construct_border(sets_VCA)
+    border = construct_border_vca(sets_VCA)
     @test border == X
     
     # test update_F
