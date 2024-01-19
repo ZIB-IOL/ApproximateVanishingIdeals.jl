@@ -4,11 +4,11 @@
 # ## Preparing data
 # Since custom oracles may vary in the data needed for the computations, we only require a custom oracle to need `data` and `labels` to construct everything, i.e. the data matrix $A$ and the label vector $b$. The first step is to prepare the data you need for your objective function. For our example, we extend our function to better see which combinations of the inputs we need. 
 # ```math
-# \frac{1}{m}\|Ax+b\|_2^2 = \frac{1}{m} <Ax+b, Ax+b> = \frac{1}{m} (<Ax, Ax> + 2<Ax, b> + <b, b>).
+# \frac{1}{m}\|Ax+b\|_2^2 = \frac{1}{m} \langle Ax+b, Ax+b\rangle = \frac{1}{m} (\langle Ax, Ax\rangle + 2\langle Ax, b\rangle + \langle b, b\rangle).
 # ```
 # Writing this in the form of matrix-vector multiplication, we get
 # ```math
-# \frac{1}{m} (<Ax, Ax> + 2<Ax, b> + <b, b>) = \frac{1}{m}(x^\top A^\top A x + 2x^\top A^\top b + b^\top b).
+# \frac{1}{m} (\langle Ax, Ax\rangle + 2\langle Ax, b\rangle + \langle b, b\rangle) = \frac{1}{m}(x^\top A^\top A x + 2x^\top A^\top b + b^\top b).
 # ```
 # Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
 using AVI 
@@ -104,5 +104,5 @@ kwargs = [(:epsilon, 1.0e-5), (:max_iteration, 5000)]
 
 X_transformed, sets = fit(X; oracle=custom_oracle, oracle_kwargs=kwargs)
 
-# The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iterations` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; epsilon=1.0e-5, max_iteration=5000)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iterations=5000)`.
+# The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iteration` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; epsilon=1.0e-5, max_iteration=5000)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iteration=5000)`.
 
