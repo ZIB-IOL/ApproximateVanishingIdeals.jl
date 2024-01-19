@@ -13,7 +13,13 @@ Writing this in the form of matrix-vector multiplication, we get
 Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
 
 ````@example docs_custom_oracle
+using AVI
+using FrankWolfe
+using LinearAlgebra
+using Random
+
 function prepare_data(A, b)
+    m, _ = size(A)
     # A.T A
     A_squared = 2/m * (A' * A)
 
@@ -59,18 +65,13 @@ function feasible_region(p, radius)
 end
 ````
 
-Closely tied with the feasible region is the choice of a starting point for the oracle. For the `LpNormLMO` we can use `compute_extreme_point` to obtain a starting vertex of our feasible region as follows:
-
-````@example docs_custom_oracle
-region = feasible_region(1, 1000)
-x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))
-````
+Closely tied with the feasible region is the choice of a starting point for the oracle. For the `LpNormLMO` we can use `compute_extreme_point` to obtain a starting vertex of our feasible region by calling `region = feasible_region(1, 1000)` and after that `x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))`
 
 ## Calling the Oracle
 The final step for our custom oracle is calling the oracle with all the things we prepared. $\texttt{OAVI}$ requires degree-lexicographical term ordering and assumes a leading term coefficient of $1$. Hence, your oracle should find a coefficient vector $x$ that only contains coefficients for `data` as the coefficient for `labels` is fixed at $1$. With the coefficient vector obtained, we compute the loss and return both `coefficient_vector` and `loss`. As an example we take the `blended_conditional_gradient` algorithm as an oracle.
 
 ````@example docs_custom_oracle
-function custom_oracle(data, labels; kwargs=[])
+function custom_oracle(data, labels; epsilon=1.0e-7, max_iteration=10000)
     # get necessary data
     f, grad! = objective(data, labels)
     region = feasible_region(1, 1000.)
@@ -82,7 +83,8 @@ function custom_oracle(data, labels; kwargs=[])
                                                         grad!,
                                                         region,
                                                         x0;
-                                                        kwargs...
+                                                        epsilon=epsilon,
+                                                        max_iteration=max_iteration
                                                         )
 
     # compute loss
@@ -99,8 +101,6 @@ end
 Now that you know what your custom oracle is expected to return and how one can go about defining such a constructor, it remains to give it to $\texttt{OAVI}$ to use.
 
 ````@example docs_custom_oracle
-using AVI
-
 # some data
 X = rand(10000, 10)
 
@@ -108,15 +108,15 @@ X = rand(10000, 10)
 X_transformed, sets = fit(X; oracle=custom_oracle)
 ````
 
-You can also pass further kwargs used by your oracle and we will pass them through to your oracle call. This is done by the `oracle_kwargs` argument. Let's say we want to pass the keyword arguments `epsilon=1.0e-5` and `max_iterations=5000` along to our custom oracle.
+You can also pass further kwargs used by your oracle and we will pass them through to your oracle call. This is done by the `oracle_kwargs` argument. Let's say we want to pass the keyword arguments `epsilon=1.0e-5` and `max_iteration=5000` along to our custom oracle.
 
 ````@example docs_custom_oracle
-kwargs = [(:epsilon, 1.0e-5), (:max_iterations, 5000)]
+kwargs = [(:epsilon, 1.0e-5), (:max_iteration, 5000)]
 
 X_transformed, sets = fit(X; oracle=custom_oracle, oracle_kwargs=kwargs)
 ````
 
-The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iterations` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; kwargs=kwargs)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iterations=5000)`.
+The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iterations` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; epsilon=1.0e-5, max_iteration=5000)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iterations=5000)`.
 
 ---
 
