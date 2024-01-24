@@ -6,7 +6,7 @@
 
 The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm solves the convex optimization problem 
 ```math
-x^* \in \argmin_{\|x\|_1 \le \tau} \|Ax + b\|_2^2,
+x^* \in \textnormal{argmin}_{\|x\|_1 \le \tau} \|Ax + b\|_2^2,
 ```
 where $A$ is the matrix of non-leading terms evaluated over the data $\texttt{X}$ and $b$ is the current leading term candidate. Through the use of an oracle, the algorithm finds the coefficient vecotr $x^{*}$ which minimizes the above problem. 
 
