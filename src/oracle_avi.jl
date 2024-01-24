@@ -16,7 +16,7 @@ Creates OAVI feature transformation fitted to X_train
 - 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
 - 'sets::SetsOandG': instance of 'SetsOandG' keeping track of important sets 
 """ 
-function fit(
+function fit_oavi(
             X_train::Matrix{Float64}; 
             max_degree::Int64=10, 
             psi::Float64=0.1, 

@@ -132,7 +132,6 @@ end
 
 """applies the transformation corresponding to G to X_test"""
 function apply_G_transformation(sets::SetsOandG, X_test)
-    m, n = size(X_test)
     test_sets_avi = construct_SetsOandG(X_test)
     
     append!(test_sets_avi.border_evaluations_raw, [X_test])

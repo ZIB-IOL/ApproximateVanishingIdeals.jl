@@ -4,7 +4,7 @@ using LinearAlgebra
 using FrankWolfe
 using Random
 
-export fit, fit_vca
+export fit_oavi, fit_vca
 export apply_G_transformation, apply_V_transformation
 
 include("auxiliary_functions.jl")
