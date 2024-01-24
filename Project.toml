@@ -4,7 +4,6 @@ authors = ["ZIB-IOL"]
 version = "0.1.0"
 
 [deps]
-DataFrames     = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 FrankWolfe     = "f55ce6ea-fdc5-4628-88c5-0087fe54bd30"
 LinearAlgebra  = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random         = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -16,9 +15,10 @@ julia       = "1"
 
 [extras] 
 CSV         = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames     = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Documenter  = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Literate    = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 
 
 [targets]
-test = ["CSV", "Documenter", "Literate"]
+test = ["CSV", "DataFrames", "Documenter", "Literate"]
