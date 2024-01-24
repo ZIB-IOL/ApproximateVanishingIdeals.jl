@@ -19,7 +19,7 @@ f(x) = \|Ax + b\|_2^2.
 ## Installation
 The most recent release is available via:
 ```julia
-Pkg.add(url="https://github.com/ZIB-IOL/AVI")
+Pkg.add(url="https://github.com/ZIB-IOL/AVI.jl")
 ```
 
 ## Getting started
