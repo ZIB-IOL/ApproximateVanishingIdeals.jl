@@ -1,3 +1,7 @@
+```@meta
+EditURL = "../../examples/docs_custom_oracle.jl"
+```
+
 # Custom Oracles
 In this section we will present an example of how to construct your own oracle to run in $\texttt{OAVI}$. We will be showing this for the objective function $\frac{1}{m}\|Ax + b\|_2^2$ and a Frank-Wolfe oracle. It is easily extendable to other setups.
 
@@ -105,7 +109,7 @@ Now that you know what your custom oracle is expected to return and how one can 
 X = rand(10000, 10)
 
 # transformation obtained through OAVI by using your custom oracle
-X_transformed, sets = fit(X; oracle=custom_oracle)
+X_transformed, sets = fit_oavi(X; oracle=custom_oracle)
 ````
 
 You can also pass further kwargs used by your oracle and we will pass them through to your oracle call. This is done by the `oracle_kwargs` argument. Let's say we want to pass the keyword arguments `epsilon=1.0e-5` and `max_iteration=5000` along to our custom oracle.
@@ -113,7 +117,7 @@ You can also pass further kwargs used by your oracle and we will pass them throu
 ````@example docs_custom_oracle
 kwargs = [(:epsilon, 1.0e-5), (:max_iteration, 5000)]
 
-X_transformed, sets = fit(X; oracle=custom_oracle, oracle_kwargs=kwargs)
+X_transformed, sets = fit_oavi(X; oracle=custom_oracle, oracle_kwargs=kwargs)
 ````
 
 The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iteration` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; epsilon=1.0e-5, max_iteration=5000)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iteration=5000)`.

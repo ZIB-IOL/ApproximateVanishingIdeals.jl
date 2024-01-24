@@ -7,7 +7,7 @@ To obtain a simple transformation, one can proceed to follow the steps presented
 using AVI
 
 X = your_data_set
-transformed_data, sets = fit(X; psi=0.005, epsilon=1.0e-5)
+transformed_data, sets = fit_oavi(X; psi=0.005, epsilon=1.0e-5)
 ```
 While `epsilon` should be adjusted according to the solver used, or personal preference for that matter, the `psi` keyword has a direct influence on the degree of polynomials constructed. It was shown in [Wirth, Kera and Pokutta](https://openreview.net/forum?id=3ZPESALKXO) that the algorithm terminates after having constructed polynomials of degree
 ```math
@@ -19,14 +19,14 @@ if $\tau \ge (3/2)^D$. The `tau` parameter by default takes the value of this lo
 We previously alluded to three different oracles being available in the code, `frank_wolfe`, `blended_conditional_gradient` and `blended_pairwise_conditional_gradient`. The default option is `frank_wolfe`, which has the keyword arugment `oracle="CG"`. The others can be accessed as follows:
 ```julia
 # Standard Frank-Wolfe. Both these formulations are the same.
-fit(X)
-fit(X; oracle="CG")   
+fit_oavi(X)
+fit_oavi(X; oracle="CG")   
 
 # Blended conditional gradients
-fit(X; oracle="BCG")
+fit_oavi(X; oracle="BCG")
 
 # Blended pairwise conditional gradients
-fit(X; oracle="BPCG")
+fit_oavi(X; oracle="BPCG")
 ```
 ### Custom Oracles
 It is also possible to provide your own oracle for solving the convex optimization problem. The code expects your constructor to work with the two variable arguments `data` and `labels`, which are the data matrix $A$ and the label vector $b$ found in $\|Ax + b\|^2$. Further, you can add your keyword arguments under `oracle_kwargs`. In the `Examples` section, we will show you how to construct a custom oracle by showing an example with an oracle from [FrankWolfe.jl](https://github.com/ZIB-IOL/FrankWolfe.jl/tree/master).
@@ -35,7 +35,7 @@ It is also possible to provide your own oracle for solving the convex optimizati
 Through the keyword `oracle` we can also call the $\texttt{ABM}$ algorithm instead. This can be accessed as follows:
 ```julia
 # Approximate Buchberger-Möller
-fit(X; oracle="ABM")
+fit_oavi(X; oracle="ABM")
 ```
 
 ## $\texttt{VCA}$ transformation

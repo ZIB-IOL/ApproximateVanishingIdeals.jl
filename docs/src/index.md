@@ -30,7 +30,7 @@ using AVI
 using random
 
 X = rand(10000, 5)
-X_transformed, sets = fit(X);
+X_transformed, sets = fit_oavi(X);
 ```
 `X_transformed` holds the transformed data and `sets` keeps track of important sets. It is recommended to adjust some keyword arguments for better results. See the examples section for more information.
 
