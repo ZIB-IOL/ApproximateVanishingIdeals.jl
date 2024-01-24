@@ -36,7 +36,7 @@ end
 @testset "Test suite for apply_G_transformation" begin
     for i in 1:5
         X_train = rand(2*i, 3)
-        X_train_transformed, sets_train = fit(X_train)
+        X_train_transformed, sets_train = fit_oavi(X_train)
         
         if X_train_transformed != nothing
             X_test_transformed, sets_test = apply_G_transformation(sets_train, X_train)
