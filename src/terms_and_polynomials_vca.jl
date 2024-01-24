@@ -52,8 +52,8 @@ end
 
 
 """updates V sets."""
-function update_V(sets::SetsVCA, V_coefficient_vectors::Union{Matrix{Float64}, Matrix{Int64}}, V_evaluation_vectors::Matrix{Float64})
-    V_coefficients, V_evaluations = zeros(Float64, 0, 0), zeros(Float64, 0, 0)
+function update_V(sets::SetsVCA, V_coefficient_vectors::Matrix{Float64}, V_evaluation_vectors::Matrix{Float64})
+    V_coefficients, V_evaluations = zeros(Float64, size(V_coefficient_vectors, 1), 0), zeros(Float64, size(V_evaluation_vectors, 1), 0)
     if size(V_coefficient_vectors, 2) > 0 && size(V_evaluation_vectors, 2) > 0
         V_coefficients = V_coefficient_vectors
         V_evaluations = V_evaluation_vectors
@@ -65,7 +65,7 @@ end
 
 """Transforms SetsVCA.Vs into single matrix."""
 function V_to_matrix(sets::SetsVCA)
-    V_array = zeros(size(sets.Vs[1], 1), 0)
+    V_array = zeros(size(sets.X, 1), 0)
     for V in sets.Vs
         if size(V, 2) > 0
             V_array = hcat(V_array, V)
