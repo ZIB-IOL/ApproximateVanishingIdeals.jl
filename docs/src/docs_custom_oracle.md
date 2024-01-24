@@ -1,7 +1,3 @@
-```@meta
-EditURL = "../../examples/docs_custom_oracle.jl"
-```
-
 # Custom Oracles
 In this section we will present an example of how to construct your own oracle to run in $\texttt{OAVI}$. We will be showing this for the objective function $\frac{1}{m}\|Ax + b\|_2^2$ and a Frank-Wolfe oracle. It is easily extendable to other setups.
 
