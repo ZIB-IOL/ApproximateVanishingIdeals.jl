@@ -31,7 +31,7 @@ read_df = CSV.read("examples/example.csv", DataFrame, types=Float64)
 ## convert DataFrame to Matrix
 data = Matrix(read_df)
 
-# Be sure that you read in your data with `Float64` as the type for your data as `fit` assumes the entries in the data matrix to be of type `Float64`. 
+# Be sure that you read in your data with `Float64` as the type for your data as `fit_oavi` assumes the entries in the data matrix to be of type `Float64`. 
 
 # Now we can start finding which $\psi$ works best for us. Choose some values for $\psi$ you want to test, for example `psis = [0.01, 0.005, 0.001, 0.0005]`. Then you loop through each $\psi$, check the e.g. classification error using your favorite classifier and choose the one that performs best.
 
@@ -50,7 +50,7 @@ error = Inf64
 ## loop psis
 for psi in psis 
     ## transformation with current psi
-    X_train_transformed, sets_train = fit(X_train; psi=psi)
+    X_train_transformed, sets_train = fit_oavi(X_train; psi=psi)
 
     """
     We do not provide a built-in classifier so feel free to use your favorite one here. 
@@ -68,7 +68,7 @@ end
 # Having found the transformation that works best on your training set, you would naturally want to apply this transformation to the data you want to classify. Since we already computed the borders and related values when constructing the transformation, we want to avoid unnecessary and expensive recomputations on testing data. For this we provide the function `apply_G_transformation` which takes as arguments `sets` and `X_test` and transforms `X_test` according to the transformation stored in `sets`. As to not get an error, we will compute `best_transform` and `best_sets` as some basic transformation.
 
 ## best transform and best sets
-best_transform, best_sets = fit(X_train; psi=0.001)
+best_transform, best_sets = fit_oavi(X_train; psi=0.001)
 
 ## apply transformation to test set
 X_test_transformed, sets_test = apply_G_transformation(best_sets, X_test)

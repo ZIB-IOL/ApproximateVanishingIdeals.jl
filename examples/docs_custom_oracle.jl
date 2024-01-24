@@ -96,13 +96,13 @@ end
 X = rand(10000, 10)
 
 ## transformation obtained through OAVI by using your custom oracle
-X_transformed, sets = fit(X; oracle=custom_oracle)
+X_transformed, sets = fit_oavi(X; oracle=custom_oracle)
 
 # You can also pass further kwargs used by your oracle and we will pass them through to your oracle call. This is done by the `oracle_kwargs` argument. Let's say we want to pass the keyword arguments `epsilon=1.0e-5` and `max_iteration=5000` along to our custom oracle.
 
 kwargs = [(:epsilon, 1.0e-5), (:max_iteration, 5000)]
 
-X_transformed, sets = fit(X; oracle=custom_oracle, oracle_kwargs=kwargs)
+X_transformed, sets = fit_oavi(X; oracle=custom_oracle, oracle_kwargs=kwargs)
 
 # The above code will call `custom_oracle` with the keyword arguments `epsilon` and `max_iteration` exchanged for `1.0e-5` and `5000`, respectively, that is, `custom_oracle(data, labels; epsilon=1.0e-5, max_iteration=5000)` and ultimately when calling the algorithm in our example `blended_conditional_gradient(f, grad!, region, x0; epsilon=1.0e-5, max_iteration=5000)`.
 
