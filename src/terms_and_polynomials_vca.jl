@@ -167,7 +167,7 @@ function evaluate_transformation(sets::SetsVCA)
         if size(coefficient_vectors, 2) > 0
             degree += i * size(coefficient_vectors, 2)
             
-            for j in 1:size(coefficient_vectors, 2)
+            for j in eachindex(size(coefficient_vectors, 2))
                 number_of_polynomials += 1
                 poly = coefficient_vectors[:, j]
                 number_of_entries = length(poly)
