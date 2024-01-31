@@ -85,7 +85,7 @@ function convert_term_to_latex(term::Vector{Int64})
     term_string = ""
     for i in eachindex(term)
         if term[i] == 1
-            term_string *= "x_$(i)"
+            term_string *= "x_{$(i)}"
         elseif term[i] > 0
             term_string *= "x_{$(i)}^{$(term[i])}"
         end
