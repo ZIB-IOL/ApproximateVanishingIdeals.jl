@@ -25,12 +25,14 @@ function print_polynomials(sets::AVI.SetsOandG; digits::Int64=2, render=false)
 
             # get only non-leading terms necessary for current coefficient vector
             terms = sets.O_terms[:, 1:idx]
-            terms = terms[:, end:-1:1]
 
             # get leading terms of current degree
             lts = sets.leading_terms[:, lt_idx_start:lt_idx_end]
-            lts = lts[:, end:-1:1]
+            
+            # all terms together in deg-lex ordering to fit the coefficient vector
             all_terms = hcat(lts, terms)
+            all_terms, _ = AVI.deg_lex_sort(all_terms)
+            all_terms = all_terms[:, end:-1:1]
     
             for (j, col) in enumerate(eachcol(coeff_vec))   
                 # build polynomial 
