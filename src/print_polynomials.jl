@@ -1,7 +1,7 @@
 """
 Prints the polynomials obtained through OAVI as a LaTeX string.
 """
-function print_polynomials(sets::AVI.SetsOandG; digits::Int64=2, render=false)
+function print_polynomials(sets; digits::Int64=2, render=false)
     deg_ids = sets.O_degree_indices
 
     lt_idx_start = 1
