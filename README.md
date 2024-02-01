@@ -32,7 +32,7 @@ using random
 X = rand(10000, 5)
 X_transformed, sets = fit_oavi(X);
 ```
-`X_transformed` holds the transformed data and `sets` keeps track of important sets. It is recommended to adjust some keyword arguments for better results. See the examples section for more information.
+`X_transformed` holds the transformed data and `sets` keeps track of important sets. It is recommended to adjust some keyword arguments for better results. See the [examples](https://zib-iol.github.io/AVI.jl/dev/how_to_run/) section for more information.
 
 ## Documentation and Examples
 To explore the contents of the package and see examples with a more detailed look at the different keyword arguments, go to the [documentation](https://zib-iol.github.io/AVI.jl).
