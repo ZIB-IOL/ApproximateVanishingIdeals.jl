@@ -5,13 +5,13 @@ D = \lceil -\log(\psi)/\log(4) \rceil,
 ```
 so tweaking the `psi` parameter is advised when searching for the best transformation. Below you can find a figure roughly indicating the influence of $\psi$ on the degree $D$. If you have some prior knowledge about the underlying structure of your data and can somewhat restrict the polynomial degree you need, limiting the range of $\psi$'s one tests can help avoid unnecessarily long runtime.
 
-![Degree of terms](../../examples/oavi_poly_deg.png)
+![Degree of terms](oavi_poly_deg.png)
 
 ## Choosing the right transformation
 
 Let's read in some data first. To keep it general we will create some small random .csv file but feel free to read in your favorite data set.
 
-````@example docs_find_transform
+````julia docs_find_transform
 using AVI
 using DataFrames
 using CSV
@@ -37,7 +37,7 @@ Be sure that you read in your data with `Float64` as the type for your data as `
 
 Now we can start finding which $\psi$ works best for us. Choose some values for $\psi$ you want to test, for example `psis = [0.01, 0.005, 0.001, 0.0005]`. Then you loop through each $\psi$, check the e.g. classification error using your favorite classifier and choose the one that performs best.
 
-````@example docs_find_transform
+````julia docs_find_transform
 # split train and test data
 X_train, X_test = data[1:90, :], data[91:end, :]
 
@@ -71,7 +71,7 @@ end
 ## Applying the transformation
 Having found the transformation that works best on your training set, you would naturally want to apply this transformation to the data you want to classify. Since we already computed the borders and related values when constructing the transformation, we want to avoid unnecessary and expensive recomputations on testing data. For this we provide the function `apply_G_transformation` which takes as arguments `sets` and `X_test` and transforms `X_test` according to the transformation stored in `sets`. As to not get an error, we will compute `best_transform` and `best_sets` as some basic transformation.
 
-````@example docs_find_transform
+````julia docs_find_transform
 # best transform and best sets
 best_transform, best_sets = fit_oavi(X_train; psi=0.001)
 
@@ -83,7 +83,7 @@ Note that `X_test` has to have the same second dimension as `X_train`, that is `
 
 Lastly, to be safe, we check that the dimensions of the transformations indeed match the number of vanishing polynomials constructed by the algorithm.
 
-````@example docs_find_transform
+````julia docs_find_transform
 println("Number of vanishing polynomials: ", size(best_sets.leading_terms, 2))
 size(best_transform, 2) == size(X_test_transformed, 2) == size(best_sets.leading_terms, 2)
 ````

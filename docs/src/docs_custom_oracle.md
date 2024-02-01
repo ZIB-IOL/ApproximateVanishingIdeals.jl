@@ -16,7 +16,7 @@ Writing this in the form of matrix-vector multiplication, we get
 ```
 Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 using AVI
 using FrankWolfe
 using LinearAlgebra
@@ -40,7 +40,7 @@ end
 ## Creating the objective function
 The next step is to create the objective function (and in our case its gradient). For this we use the previously defined function to prepare the data and create the objective.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 function objective(data, labels)
     # prepare data for objective
     A_squared, A_b, b_squared = prepare_data(data, labels)
@@ -63,7 +63,7 @@ end
 ## Defining the feasible region
 Since we are dealing with a constrained optimization problem, defining a feasible region is necessary. We will use FrankWolfe.jl's built-in feasible regions, however one may construct their own feasible region through other means, so for the sake of this presentation we will once again define a function. This function will define the $\ell_p$-ball with a given radius.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 function feasible_region(p, radius)
     return FrankWolfe.LpNormLMO{p}(radius)
 end
@@ -74,7 +74,7 @@ Closely tied with the feasible region is the choice of a starting point for the 
 ## Calling the Oracle
 The final step for our custom oracle is calling the oracle with all the things we prepared. $\texttt{OAVI}$ requires degree-lexicographical term ordering and assumes a leading term coefficient of $1$. Hence, your oracle should find a coefficient vector $x$ that only contains coefficients for `data` as the coefficient for `labels` is fixed at $1$. With the coefficient vector obtained, we compute the loss and return both `coefficient_vector` and `loss`. As an example we take the `blended_conditional_gradient` algorithm as an oracle.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 function custom_oracle(data, labels; epsilon=1.0e-7, max_iteration=10000)
     # get necessary data
     f, grad! = objective(data, labels)
@@ -104,7 +104,7 @@ end
 ## Putting it all together
 Now that you know what your custom oracle is expected to return and how one can go about defining such a constructor, it remains to give it to $\texttt{OAVI}$ to use.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 # some data
 X = rand(10000, 10)
 
@@ -114,7 +114,7 @@ X_transformed, sets = fit_oavi(X; oracle=custom_oracle)
 
 You can also pass further kwargs used by your oracle and we will pass them through to your oracle call. This is done by the `oracle_kwargs` argument. Let's say we want to pass the keyword arguments `epsilon=1.0e-5` and `max_iteration=5000` along to our custom oracle.
 
-````@example docs_custom_oracle
+````julia docs_custom_oracle
 kwargs = [(:epsilon, 1.0e-5), (:max_iteration, 5000)]
 
 X_transformed, sets = fit_oavi(X; oracle=custom_oracle, oracle_kwargs=kwargs)

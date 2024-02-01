@@ -14,6 +14,12 @@ Modules = [AVI]
 Pages = ["auxiliary_functions.jl"]
 ```
 
+## Printing polynomials
+```@autodocs
+Modules = [AVI]
+Pages = ["print_polynomials.jl"]
+```
+
 ## Index
 ```@index
 Pages = ["5_auxiliary_funcs.md"]

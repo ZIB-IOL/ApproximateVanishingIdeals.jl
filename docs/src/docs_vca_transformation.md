@@ -6,7 +6,7 @@ Unlike $\texttt{OAVI}$, $\texttt{VCA}$ does not enjoy a known relation between t
 
 Once again, let's begin by creating or reading in our data set.
 
-````@example docs_vca_transformation
+````julia docs_vca_transformation
 using AVI
 using DataFrames
 using CSV
@@ -32,7 +32,7 @@ Just as with $\texttt{OAVI}$, `fit_vca` expects the data matrix to be of type `F
 
 As with the previous example, the next step is to choose some range of $\psi$'s you wish to test. We recommend to choose a wider range, for example `psis=[0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]`. Now, just as with $\texttt{OAVI}$, we wish to test and compare the transformations for different values of $\psi$.
 
-````@example docs_vca_transformation
+````julia docs_vca_transformation
 # split train and test data
 X_train, X_test = data[1:90, :], data[91:end, :]
 
@@ -67,7 +67,7 @@ Use your favorite classification method to compare the transformations and choos
 ## Applying the transformation
 After having found the transformation best suited to your data, you can apply this transformation to the data you wish to classify. Passing `best_sets_vca` and `X_test` to `apply_V_transformation` applies the $\texttt{VCA}$ transformation stored in `best_sets_vca` to `X_test`. We compute some `best_transform_vca` and 'best_sets_vca' as to not get an error.
 
-````@example docs_vca_transformation
+````julia docs_vca_transformation
 # best transform and best sets for VCA
 best_transform_vca, best_sets_vca = fit_vca(X_train; psi=0.001)
 
@@ -79,7 +79,7 @@ Once again, the data to which the transformation is applied should have the same
 
 We perform the same sanity check as for $\texttt{OAVI}$ to see if the dimension of the transformation matches.
 
-````@example docs_vca_transformation
+````julia docs_vca_transformation
 # get all polynomials into single matrix
 polys = AVI.V_to_matrix(best_sets_vca)
 

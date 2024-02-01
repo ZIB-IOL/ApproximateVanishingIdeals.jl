@@ -2,7 +2,7 @@
 
 `AVI.jl` contains routines to construct approximately vanishing polynomials from the data processed previously. Through the iterations, the data used for construction is expanded with the evaluation of non-leading terms over the data points $\texttt{X}$. 
 
-## Oracle Approximate Vanishing Ideal algorithm 
+## Oracle Approximate Vanishing Ideal algorithm ($\texttt{OAVI}$)
 
 The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm solves the convex optimization problem 
 ```math
@@ -22,5 +22,5 @@ You can choose from the standard `frank_wolfe`, the `blended_conditional_gradien
 
 $\texttt{ABM}$ is another related algorithm which shares the degree-lexicographical term ordering as well as processing terms of a given degree $d$ one by one instead of all at once. Due to these similarities we elected to implement $\texttt{ABM}$ inside of [`fit_oavi`](@ref). The algorithm can be run by providing the keyword argument `oracle = "ABM"`. See [J. Limbeck (2013), Chapter 4](https://www.researchgate.net/publication/283651363_Computation_of_Approximate_Border_Bases_and_Applications) for more details about the method.
 
-### Vanishing Component Analysis ($\texttt{VCA}$)
+## Vanishing Component Analysis ($\texttt{VCA}$)
 $\texttt{VCA}$ is the final algorithm implemented in this repository. It is once again a method to obtain a polynomial feature transformation with small but significant differences compared to $\texttt{OAVI}$. The main differences are $\texttt{VCA}$ not relying on degree-lexicographic ordering of terms when processing terms and using SVD to obtain coefficient vectors in contrast to the use of an oracle in $\texttt{OAVI}$. See [Livni et al. (2013)](https://proceedings.mlr.press/v28/livni13.html) for additional information.

@@ -3,18 +3,18 @@ This section contains information about the different oracles for $\texttt{OAVI}
 
 ## Frank-Wolfe
 ```@docs
-conditional_gradients
+AVI.conditional_gradients
 ```
 
 ### Objective function
 Tied to the `Frank-Wolfe` oracles is the construction of the objective function, the L2-loss function.
 ```@docs
-L2Loss
+AVI.L2Loss
 ```
 
 ## Approximate Buchberger-Möller (ABM)
 ```@docs
-abm
+AVI.abm
 ```
 
 ## Index
