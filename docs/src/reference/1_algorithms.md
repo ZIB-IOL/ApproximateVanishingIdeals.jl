@@ -11,9 +11,15 @@ Pages = ["oracle_avi.jl"]
 
 ## VCA
 
-```@autodocs
-Modules = [AVI]
-Pages = ["vca.jl"]
+```@docs
+fit_oavi
+```
+
+```@docs
+AVI.find_range_null_vca
+```
+```@docs
+AVI.evaluate_vca
 ```
 
 ## Index 
