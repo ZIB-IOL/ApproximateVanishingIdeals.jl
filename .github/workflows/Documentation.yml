@@ -18,6 +18,7 @@ jobs:
         shell: julia --project=docs {0}
         run: |
           import Pkg
+          Pkg.add("Documenter")
           Pkg.develop(path=pwd())
           Pkg.instantiate()
       - name: Build and deploy
