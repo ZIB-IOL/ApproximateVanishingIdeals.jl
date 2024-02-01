@@ -1,5 +1,3 @@
-using LinearAlgebra
-
 """
 Manages the sets V, C and F for VCA.
 """
