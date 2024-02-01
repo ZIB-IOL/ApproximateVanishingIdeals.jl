@@ -35,7 +35,7 @@ X_transformed, sets = fit_oavi(X);
 `X_transformed` holds the transformed data and `sets` keeps track of important sets. It is recommended to adjust some keyword arguments for better results. See the examples section for more information.
 
 ## Documentation and Examples
-To explore the contents of the package and see examples with a more detailed look at the different keyword arguments, go to the [documentation](zib-iol.github.io/AVI.jl).
+To explore the contents of the package and see examples with a more detailed look at the different keyword arguments, go to the [documentation](https://zib-iol.github.io/AVI.jl).
 
 
 
