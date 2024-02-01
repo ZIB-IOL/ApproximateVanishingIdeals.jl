@@ -1,6 +1,6 @@
 # AVI.jl
 
-[![][docs-img]][docs-url]
+[![][https://img.shields.io/badge/docs-latest%20release-blue.svg]][zib-iol.github.io/AVI.jl/dev]
 
 This package is a toolbox for polynomial feature extraction and transformation using the Oracle Approximate Vanishing Ideal Algorithm.
 
@@ -35,10 +35,9 @@ X_transformed, sets = fit_oavi(X);
 `X_transformed` holds the transformed data and `sets` keeps track of important sets. It is recommended to adjust some keyword arguments for better results. See the examples section for more information.
 
 ## Documentation and Examples
-To explore the contents of the package and see examples with a more detailed look at the different keyword arguments, go to the [documentation](https://github.com/ZIB-IOL/AVI).
+To explore the contents of the package and see examples with a more detailed look at the different keyword arguments, go to the [documentation](zib-iol.github.io/AVI.jl).
 
 
-[docs-img]: https://img.shields.io/badge/docs-latest%20release-blue.svg
-[docs-url]: https://github.com/ZIB-IOL/AVI
+
 
 
