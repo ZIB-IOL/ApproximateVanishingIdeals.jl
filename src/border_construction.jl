@@ -1,6 +1,3 @@
-    using LinearAlgebra
-
-
 """reconstructs border for O_test"""
 function reconstruct_border(O1_test::Matrix{Float64}, 
                             O_test::Matrix{Float64}, 
