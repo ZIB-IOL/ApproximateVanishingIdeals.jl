@@ -1,6 +1,6 @@
 # AVI.jl
 
-[![Dev](https://img.shields.io/badge/docs-latest%20release-blue.svg)](zib-iol.github.io/AVI.jl)
+[![Dev](https://img.shields.io/badge/docs-latest%20release-blue.svg)](https://zib-iol.github.io/AVI.jl)
 
 This package is a toolbox for polynomial feature extraction and transformation using the Oracle Approximate Vanishing Ideal Algorithm.
 
