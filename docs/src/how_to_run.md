@@ -9,7 +9,7 @@ using AVI
 X = your_data_set
 transformed_data, sets = fit_oavi(X; psi=0.005, epsilon=1.0e-5)
 ```
-While `epsilon` should be adjusted according to the solver used, or personal preference for that matter, the `psi` keyword has a direct influence on the degree of polynomials constructed. It was shown in [Wirth, Kera and Pokutta](https://openreview.net/forum?id=3ZPESALKXO) that the algorithm terminates after having constructed polynomials of degree
+While `epsilon` should be adjusted according to the solver used, or personal preference for that matter, the `psi` keyword has a direct influence on the degree of polynomials constructed. It was shown in [Wirth, Kera and Pokutta (2022)](https://openreview.net/forum?id=3ZPESALKXO) that the algorithm terminates after having constructed polynomials of degree
 ```math
 D = \lceil -\log(\psi)/\log(4) \rceil,
 ```
