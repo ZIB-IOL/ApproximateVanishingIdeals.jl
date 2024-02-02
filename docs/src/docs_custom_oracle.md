@@ -1,12 +1,8 @@
-```@meta
-EditURL = "../../examples/docs_custom_oracle.jl"
-```
-
 # Custom Oracles
 In this section we will present an example of how to construct your own oracle to run in $\texttt{OAVI}$. We will be showing this for the objective function $\frac{1}{m}\|Ax + b\|_2^2$ and a Frank-Wolfe oracle. It is easily extendable to other setups.
 
 ## Preparing data
-Since custom oracles may vary in the data needed for the computations, we only require a custom oracle to need `data` and `labels` to construct everything, i.e. the data matrix $A$ and the label vector $b$. The first step is to prepare the data you need for your objective function. For our example, we extend our function to better see which combinations of the inputs we need.
+Since custom oracles may vary in the data needed for the computations, we only require a custom oracle to need `data` and `labels` to construct everything, i.e. the data matrix $A$, consisting of the non-leading term evaluations and the label vector $b$, which holds the evaluations of the current leading term candidate. The first step is to prepare the data you need for your objective function. For our example, we extend our function to better see which combinations of the inputs we need.
 ```math
 \frac{1}{m}\|Ax+b\|_2^2 = \frac{1}{m} \langle Ax+b, Ax+b\rangle = \frac{1}{m} (\langle Ax, Ax\rangle + 2\langle Ax, b\rangle + \langle b, b\rangle).
 ```
@@ -14,7 +10,7 @@ Writing this in the form of matrix-vector multiplication, we get
 ```math
 \frac{1}{m} (\langle Ax, Ax\rangle + 2\langle Ax, b\rangle + \langle b, b\rangle) = \frac{1}{m}(x^\top A^\top A x + 2x^\top A^\top b + b^\top b).
 ```
-Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
+Now we can easily see which combinations of $A$ and $b$ we need. Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
 
 ````julia docs_custom_oracle
 using AVI
@@ -72,7 +68,9 @@ end
 Closely tied with the feasible region is the choice of a starting point for the oracle. For the `LpNormLMO` we can use `compute_extreme_point` to obtain a starting vertex of our feasible region by calling `region = feasible_region(1, 1000)` and after that `x0 = compute_extreme_point(region, zeros(Float64, size(data, 2)))`
 
 ## Calling the Oracle
-The final step for our custom oracle is calling the oracle with all the things we prepared. $\texttt{OAVI}$ requires degree-lexicographical term ordering and assumes a leading term coefficient of $1$. Hence, your oracle should find a coefficient vector $x$ that only contains coefficients for `data` as the coefficient for `labels` is fixed at $1$. With the coefficient vector obtained, we compute the loss and return both `coefficient_vector` and `loss`. As an example we take the `blended_conditional_gradient` algorithm as an oracle.
+The final step for our custom oracle is calling the oracle with all the things we prepared. $\texttt{OAVI}$ requires degree-lexicographical term ordering and assumes a leading term coefficient of $1$. Be sure to return not only the coefficient vector $x^*$ for the non-leading terms, but extend the coefficient vector by the leading term coefficient $1$.
+
+ With the coefficient vector obtained, we compute the loss and return both `coefficient_vector` and `loss`. As an example we take the `blended_conditional_gradient` algorithm as an oracle.
 
 ````julia docs_custom_oracle
 function custom_oracle(data, labels; epsilon=1.0e-7, max_iteration=10000)

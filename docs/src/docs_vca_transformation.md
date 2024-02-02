@@ -1,5 +1,5 @@
 # Transforming data using $\texttt{VCA}$
-If you whis to use $\texttt{VCA}$ instead of $\texttt{OAVI}$ to obtain your transformation, then here we will briefly explain how you can go about it.
+If you wish to use $\texttt{VCA}$ instead of $\texttt{OAVI}$ to obtain your transformation, then here we will briefly explain how you can go about it.
 
 ## Choosing the right transformation
 Unlike $\texttt{OAVI}$, $\texttt{VCA}$ does not enjoy a known relation between the vanishing parameter $\psi$ and the degree of constructed polynomials. This makes a wider range of $\psi$'s to compare necessary, even if one has some knowledge about which polynomial degrees may prove better. Luckily, the way to go about finding the best transformation is very similar to the one presented for $\texttt{OAVI}$.
@@ -65,7 +65,7 @@ end
 Use your favorite classification method to compare the transformations and choose the one that fits your data and problem best.
 
 ## Applying the transformation
-After having found the transformation best suited to your data, you can apply this transformation to the data you wish to classify. Passing `best_sets_vca` and `X_test` to `apply_V_transformation` applies the $\texttt{VCA}$ transformation stored in `best_sets_vca` to `X_test`. We compute some `best_transform_vca` and 'best_sets_vca' as to not get an error.
+After having found the transformation best suited to your data, you can apply this transformation to the data you wish to classify. Passing `best_sets_vca` and `X_test` to `apply_V_transformation` applies the $\texttt{VCA}$ transformation stored in `best_sets_vca` to `X_test`. We compute some `best_transform_vca` and `best_sets_vca` as to not get an error.
 
 ````julia docs_vca_transformation
 # best transform and best sets for VCA
