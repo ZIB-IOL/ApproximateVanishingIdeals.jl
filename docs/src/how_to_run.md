@@ -29,7 +29,7 @@ fit_oavi(X; oracle="BCG")
 fit_oavi(X; oracle="BPCG")
 ```
 ### Custom Oracles
-It is also possible to provide your own oracle for solving the convex optimization problem. The code expects your constructor to work with the two variable arguments `data` and `labels`, which are the data matrix $A$, containing the evaluations of non-leading terms, and the label vector $b$, containing the evaluations of the current leading term candidate, found in $\|Ax + b\|^2$. Further, you can add your keyword arguments under `oracle_kwargs`. In the `Examples` section, we will show you how to construct a custom oracle by showing an example with an oracle from [FrankWolfe.jl](https://github.com/ZIB-IOL/FrankWolfe.jl/tree/master).
+It is also possible to provide your own oracle for solving the convex optimization problem. The code expects your constructor to work with the two variable arguments `data` and `labels`, which are the data matrix $A$, containing the evaluations of non-leading terms, and the label vector $b$, containing the evaluations of the current leading term candidate, found in $\|Ax + b\|^2$. Further, you can add your keyword arguments under `oracle_kwargs`. In the following few pages, we will show you how to construct a custom oracle by showing an example with an oracle from [FrankWolfe.jl](https://github.com/ZIB-IOL/FrankWolfe.jl/tree/master).
 
 ### $\texttt{ABM}$ 
 Through the keyword `oracle` we can also call the $\texttt{ABM}$ algorithm instead. This can be accessed as follows:
