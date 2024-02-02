@@ -6,8 +6,7 @@ This package is a toolbox for polynomial feature extraction and transformation u
 
 ## Overview
 
-The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm was designed to compute the vanishing ideal of a set of points. Instead of adopting the then common approach of
-using singular value decomposition, $\texttt{OAVI}$ finds vanishing polynomials by solving a convex optimization problem of the form
+The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm was designed to compute the vanishing ideal of a set of points. Instead of adopting the common approach of using singular value decomposition, $\texttt{OAVI}$ finds vanishing polynomials by solving a convex optimization problem of the form
 ```math
 \min_{x \in C} f(x),
 ```
