@@ -22,18 +22,36 @@ x_1x_{3}^{2} - 0.09x_2x_3 - 0.97x_1x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} + 0.02x_3
 x_2x_{3}^{2} - 1.04x_2x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} - 0.01x_3 + 0.18x_2 - 0.05x_1 + 0.01
 ```
 Then, it is as easy as copy and pasting it into LaTeX with your preferred formatting and you can take a look at them.
-\[
-x_{3}^{2} - 0.1x_2x_3 + 0.09x_1x_3 + 0.07x_{2}^{2} - 0.05x_1x_2 + 0.04x_{1}^{2} - 1.03x_3 - 0.01x_2 - 0.04x_1 + 0.18\\
-x_{1}^{3} + 0.01x_2x_3 - 0.03x_1x_3 - 0.01x_1x_2 - 1.48x_{1}^{2} + 0.01x_3 + 0.6x_1 - 0.06\\
-x_{1}^{2}x_2 + 0.01x_2x_3 - 0.02x_1x_3 - 0.05x_{2}^{2} - 1.02x_1x_2 - 0.44x_{1}^{2} + 0.01x_3 + 0.22x_2 + 0.46x_1 - 0.09\\
-x_1x_{2}^{2} - 0.03x_2x_3 + 0.08x_1x_3 - 0.52x_{2}^{2} - 1.0x_1x_2 - 0.01x_{1}^{2} - 0.02x_3 + 0.51x_2 + 0.13x_1 - 0.07\\
-x_{2}^{3} + 0.07x_2x_3 + 0.03x_1x_3 - 1.41x_{2}^{2} - 0.04x_1x_2 - 0.06x_{1}^{2} - 0.04x_3 + 0.49x_2 + 0.04x_1 - 0.02\\
-x_{1}^{2}x_3 - 0.96x_1x_3 + 0.02x_{2}^{2} - 0.03x_1x_2 - 0.54x_{1}^{2} + 0.15x_3 - 0.01x_2 + 0.53x_1 - 0.09\\
-x_1x_2x_3 - 0.51x_2x_3 - 0.42x_1x_3 - 0.01x_{2}^{2} - 0.44x_1x_2 - 0.01x_{1}^{2} + 0.2x_3 + 0.24x_2 + 0.2x_1 - 0.1\\
-x_{2}^{2}x_3 - 0.94x_2x_3 - 0.04x_1x_3 - 0.44x_{2}^{2} - 0.03x_1x_2 + 0.02x_{1}^{2} + 0.16x_3 + 0.44x_2 + 0.01x_1 - 0.08\\
-x_1x_{3}^{2} - 0.09x_2x_3 - 0.97x_1x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} + 0.02x_3 + 0.01x_2 + 0.11x_1\\
-x_2x_{3}^{2} - 1.04x_2x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} - 0.01x_3 + 0.18x_2 - 0.05x_1 + 0.01.\\
-\]
+```math
+x_{3}^{2} - 0.1x_2x_3 + 0.09x_1x_3 + 0.07x_{2}^{2} - 0.05x_1x_2 + 0.04x_{1}^{2} - 1.03x_3 - 0.01x_2 - 0.04x_1 + 0.18
+```
+```math
+x_{1}^{3} + 0.01x_2x_3 - 0.03x_1x_3 - 0.01x_1x_2 - 1.48x_{1}^{2} + 0.01x_3 + 0.6x_1 - 0.06
+```
+```math
+x_{1}^{2}x_2 + 0.01x_2x_3 - 0.02x_1x_3 - 0.05x_{2}^{2} - 1.02x_1x_2 - 0.44x_{1}^{2} + 0.01x_3 + 0.22x_2 + 0.46x_1 - 0.09
+```
+```math
+x_1x_{2}^{2} - 0.03x_2x_3 + 0.08x_1x_3 - 0.52x_{2}^{2} - 1.0x_1x_2 - 0.01x_{1}^{2} - 0.02x_3 + 0.51x_2 + 0.13x_1 - 0.07
+```
+```math
+x_{2}^{3} + 0.07x_2x_3 + 0.03x_1x_3 - 1.41x_{2}^{2} - 0.04x_1x_2 - 0.06x_{1}^{2} - 0.04x_3 + 0.49x_2 + 0.04x_1 - 0.02
+```
+```math
+x_{1}^{2}x_3 - 0.96x_1x_3 + 0.02x_{2}^{2} - 0.03x_1x_2 - 0.54x_{1}^{2} + 0.15x_3 - 0.01x_2 + 0.53x_1 - 0.09
+```
+```math
+x_1x_2x_3 - 0.51x_2x_3 - 0.42x_1x_3 - 0.01x_{2}^{2} - 0.44x_1x_2 - 0.01x_{1}^{2} + 0.2x_3 + 0.24x_2 + 0.2x_1 - 0.1
+```
+```math
+x_{2}^{2}x_3 - 0.94x_2x_3 - 0.04x_1x_3 - 0.44x_{2}^{2} - 0.03x_1x_2 + 0.02x_{1}^{2} + 0.16x_3 + 0.44x_2 + 0.01x_1 - 0.08
+```
+```math
+x_1x_{3}^{2} - 0.09x_2x_3 - 0.97x_1x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} + 0.02x_3 + 0.01x_2 + 0.11x_1
+```
+```math
+x_2x_{3}^{2} - 1.04x_2x_3 + 0.02x_{2}^{2} + 0.06x_{1}^{2} - 0.01x_3 + 0.18x_2 - 0.05x_1 + 0.01.
+```
 The polynomials are printed in ascending order of degree, that is, first are the polynomials of degree $1$, then degree $2$, etc. Within one degree, the polynomials are ordered degree-lexicographically increasing w.r.t. their respective leading term, so for two polynomials $p_1, p_2$ of degree $k$ the leading term of $p_1$ is always degree-lexicographically smaller than the leading term of $p_2$. Further, each polynomial is ordered in descending degree-lexicographic order, meaning the degree-lexicographically biggest term is at the front and the smallest term is at the very end. 
 
 The function [`print_polynomials`](@ref) has an additional keyword argument `digits` with which you can decide up to how many digits the coefficients should be rounded, e.g. `print_polynomials(sets; digits=4)` to round to $4$ decimal places. Further, the value for `digits` also dictates, how many decimal places are printed to the console when calling `print_polynomials`.
