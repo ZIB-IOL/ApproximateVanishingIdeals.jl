@@ -23,7 +23,7 @@ constructs the border of 'terms'
 # Arguments
 - 'terms::Matrix{Int64}': Matrix with monomial terms as columns
 - 'terms_evaluated::Matrix{Float64}': Matrix with evaluations of 'terms' over X
-- 'X_train::Vector{Vector{Float64}}': data
+- 'X_train::Matrix{Float64}': data
 - 'degree_1_terms::Matrix{Int64}': Matrix with degree 1 monomials as columns
 - 'degree_1_terms_evaluated::Matrix{Float64}': evaluations of 'degree_1_terms' over X
 - 'purging_terms::Matrix{Int64}': purge terms in 'terms' divisible by any of these 
@@ -36,7 +36,7 @@ constructs the border of 'terms'
 """
 function construct_border(terms::Matrix{Int64}, 
                           terms_evaluated::Matrix{Float64}, 
-                          X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}, 
+                          X_train::Matrix{Float64}, 
                           degree_1_terms::Matrix{Int64}=zeros(Int64, 0, 0), 
                           degree_1_terms_evaluated::Matrix{Float64}=zeros(Float64, 0, 0), 
                           purging_terms::Matrix{Int64}=zeros(Int64, 0, 0)
