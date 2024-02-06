@@ -68,8 +68,7 @@ end
 best_transform_vca, best_sets_vca = fit_vca(X_train; psi=0.001)
 
 ## apply VCA transformation to test set
-X_test_transformed_vca, sets_test_
-vca = apply_V_transformation(best_sets_vca, X_test)
+X_test_transformed_vca, sets_test_vca = apply_V_transformation(best_sets_vca, X_test)
 
 # Once again, the data to which the transformation is applied should have the same second dimension as `X_train`, which means `size(X_train, 2) == size(X_test, 2)` should hold.
 
