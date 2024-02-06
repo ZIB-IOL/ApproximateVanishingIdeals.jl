@@ -4,7 +4,7 @@ Prints the polynomials obtained through OAVI as a LaTeX string.
 'digits' can be used to determine how many decimal places you want to round to. 
 Terms with rounded coefficient values 0.0 are omitted and coefficients with value 1.0 are omitted.
 """
-function print_polynomials(sets; digits::Int64=2, render=false)
+function print_polynomials(sets; digits::Int64=2)
     deg_ids = sets.O_degree_indices
 
     lt_idx_start = 1
