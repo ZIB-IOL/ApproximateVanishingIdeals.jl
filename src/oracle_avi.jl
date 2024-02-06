@@ -2,7 +2,7 @@
 Creates OAVI feature transformation fitted to X_train
 
 # Arguments
-- 'X_train::Union{Matrix{Float64}, Vector{Vector{Float64}}}': training data
+- 'X_train::Matrix{Float64}': training data
 - 'max_degree::Int64': max degree of polynomials computed (default 10)
 - 'psi::Float64': vanishing extent (default 0.1)
 - 'epsilon::Float64': accuracy for convex optimizer (default 1.0e-7)
@@ -13,7 +13,7 @@ Creates OAVI feature transformation fitted to X_train
 - 'oracle_kwargs::Vector': Array containing keyword arguments for external constructor functions
 
 # Returns
-- 'X_train_transformed::Vector{Vector{Float64}}': transformed X_train
+- 'X_train_transformed::Matrix{Float64}': transformed X_train
 - 'sets::SetsOandG': instance of 'SetsOandG' keeping track of important sets 
 """ 
 function fit_oavi(
