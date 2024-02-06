@@ -2,26 +2,26 @@
 Creates and returns objective function, gradient and solution (through inversion) w.r.t. L2 loss.
 
 # Arguments
-- 'data::Union{Matrix{Float64}, Matrix{Int64}}': evaluations of O_terms 
-- 'labels::Union{Vector{Float64}, Vector{Int64}}': current border term evaluated
+- 'data::Matrix{Float64}': evaluations of O_terms 
+- 'labels::Vector{Float64}': current border term evaluated
 - 'lambda::Union{Float64, Int64}': regularization parameter
-- 'data_squared::Union{Matrix{Float64}, Matrix{Int64}}': data' * data 
+- 'data_squared::Matrix{Float64}': data' * data 
 - 'data_labels::Vector{Float64}': data' * labels
 - 'labels_squared::Float64': labels' * labels
-- 'data_squared_inverse::Union{Matrix{Float64}, Matrix{Int64}, Nothing}': inverse of data_squared for IHB, optional (default is nothing)
+- 'data_squared_inverse::Union{Matrix{Float64}, Nothing}': inverse of data_squared for IHB, optional (default is nothing)
 
 # Returns
 - 'solution::Vector{Float64}': solution to (unconstrained) minimization problem
 - 'evaluate_function<:Function': objective function
 - 'evaluate_gradient!<:Function': gradient of objective function, adjusted to FrankWolfe requirements
 """
-function L2Loss(data::Union{Matrix{Float64}, Matrix{Int64}}, 
-        labels::Union{Vector{Float64}, Vector{Int64}},
+function L2Loss(data::Matrix{Float64}, 
+        labels::Vector{Float64},
         lambda::Union{Float64, Int64}, 
-        data_squared::Union{Matrix{Float64}, Matrix{Int64}}, 
+        data_squared::Matrix{Float64}, 
         data_labels::Vector{Float64},
         labels_squared::Float64;
-        data_squared_inverse::Union{Matrix{Float64}, Matrix{Int64}, Nothing}=nothing)
+        data_squared_inverse::Union{Matrix{Float64}, Nothing}=nothing)
     A = data
     m, n = size(data)
     b = labels
