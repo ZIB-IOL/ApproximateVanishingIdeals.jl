@@ -3,13 +3,13 @@ Returns coefficient_vector and loss found through CG-based algorithm fit to 'dat
 
 # Arguments
 - 'oracle_type::String': type of CG-based algorithm (choice from 'CG', 'BCG', 'BPCG')
-- 'data::Union{Matrix{Float64}, Matrix{Int64}}': evaluations of O_terms 
-- 'labels::Union{Vector{Float64}, Vector{Int64}}': current border term evaluated
+- 'data::Matrix{Float64}': evaluations of O_terms 
+- 'labels::Vector{Float64}': current border term evaluated
 - 'lambda::Union{Float64, Int64}': regularization parameter
-- 'data_squared::Union{Matrix{Float64}, Matrix{Int64}}': data' * data 
+- 'data_squared::Matrix{Float64}': data' * data 
 - 'data_labels::Vector{Float64}': data' * labels
 - 'labels_squared::Float64': labels' * labels
-- 'data_squared_inverse::Union{Matrix{Float64}, Matrix{Int64}, Nothing}': inverse of data_squared for IHB, optional (default is nothing)
+- 'data_squared_inverse::Union{Matrix{Float64}, Nothing}': inverse of data_squared for IHB, optional (default is nothing)
 - 'psi::Float64': vanishing parameter, optional (default is 0.1)
 - 'epsilon::Float64': solver accuracy, optional (default is 0.001)
 - 'tau::Float64': bound on coefficient_vector norm, optional (default is 1000.)
@@ -21,13 +21,13 @@ Returns coefficient_vector and loss found through CG-based algorithm fit to 'dat
 """
 function conditional_gradients(
         oracle_type::String, 
-        data::Union{Matrix{Float64}, Matrix{Int64}}, 
-        labels::Union{Vector{Float64}, Vector{Int64}},
+        data::Matrix{Float64}, 
+        labels::Vector{Float64},
         lambda::Union{Float64, Int64}, 
-        data_squared::Union{Matrix{Float64}, Matrix{Int64}}, 
+        data_squared::Matrix{Float64}, 
         data_labels::Vector{Float64},
         labels_squared::Float64;
-        data_squared_inverse::Union{Matrix{Float64}, Matrix{Int64}, Nothing}=nothing,
+        data_squared_inverse::Union{Matrix{Float64}, Nothing}=nothing,
         psi::Float64=0.1,
         epsilon::Float64=0.001,
         tau::Float64=1000.,
@@ -96,23 +96,25 @@ Runs ABM algorithm to find coefficient vector and computes loss.
 
 # Arguments
 - 'oracle_type::String': string denoting which oracle to construct
-- 'data::Union{Matrix{Float64}, Matrix{Int64}}': data (O_evaluations)
-- 'labels::Union{Vector{Float64}, Vector{Int64}}': labels (term_evaluated)
+- 'data::Matrix{Float64}': data (O_evaluations)
+- 'labels::Vector{Float64}': labels (term_evaluated)
 - 'lambda::Union{Float64, Int64}': regularization parameter (if applicable)
-- 'data_squared::Union{Matrix{Float64}, Matrix{Int64}}': squared data 
+- 'data_squared::Matrix{Float64}': squared data 
 - 'data_labels::Vector{Float64}': data' * labels 
 - 'labels_squared::Float64': labels' * labels
-- 'data_squared_inverse::Union{Matrix{Float64}, Matrix{Int64}, Nothing}': inverse of data_squared (default is nothing)
+- 'data_squared_inverse::Union{Matrix{Float64}, Nothing}': inverse of data_squared (default is nothing)
 
 # Returns
 - 'coefficient_vector::Vector{Float64}': coefficient vector minimizing ABM optimization problem
 - 'loss::Float64': loss w.r.t. 'coefficient_vector' 
 """
-function abm(data::Union{Matrix{Float64}, Matrix{Int64}}, 
+function abm(
+        data::Matrix{Float64}, 
         labels::Union{Vector{Float64}, Vector{Int64}},
-        data_squared::Union{Matrix{Float64}, Matrix{Int64}}, 
+        data_squared::Matrix{Float64}, 
         data_labels::Vector{Float64},
-        labels_squared::Float64)
+        labels_squared::Float64
+        )    
     data_with_labels = hcat(data, labels)
     m = size(data_with_labels, 1)
     
