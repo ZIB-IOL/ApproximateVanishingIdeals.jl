@@ -14,7 +14,7 @@ The formulation above may look similar to a regression problem, but that is not 
 ```math
 x^* \in \underset{\|x\|_1 \le \tau}{\textnormal{arg}\min} \|(Ax + b) - \mathbf{0}\|_2^2,
 ```
-where $Ax+b$ is describes the polynomial with non-leading terms $A$ and leading term $b$ and $\mathbf{0}$ is the zero-polynomial, instead of minimizing, e.g. the average distance of our polynomials to the zero-polynomial 
+where $Ax+b$ is describes the polynomial with non-leading terms $A$ and leading term $b$ and $\mathbf{0}$ is the zero-polynomial, instead of minimizing, e.g. the average distance of all polynomials to the zero-polynomial as would be common for a regression setting.
 
 The algorithm is implemented in the [`fit_oavi`](@ref) function. See [E. Wirth and S. Pokutta (2022)](https://proceedings.mlr.press/v151/wirth22a.html) for more details about the method.
 
