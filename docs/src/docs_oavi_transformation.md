@@ -1,11 +1,11 @@
-# Transforming data using $\texttt{OAVI}$
+# Transforming data using $\; \texttt{OAVI}$
 Finding the right transformation for your data with $\texttt{OAVI}$ is heavily tied to the vanishing parameter $\psi$. As previously stated, $\texttt{OAVI}$ terminates after having constructed polynomials of degree
 ```math
 D = \lceil -\log(\psi)/\log(4) \rceil,
 ```
 so tweaking the `psi` parameter is advised when searching for the best transformation. Below you can find a figure roughly indicating the influence of $\psi$ on the degree $D$. If you have some prior knowledge about the underlying structure of your data and can somewhat restrict the polynomial degree you need, limiting the range of $\psi$'s one tests can help avoid unnecessarily long runtime.
 
-![Degree of terms](oavi_poly_deg.png)
+![Degree of terms](oavi_poly_deg.svg)
 
 ## Choosing the right transformation
 

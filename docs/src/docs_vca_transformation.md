@@ -1,4 +1,4 @@
-# Transforming data using $\texttt{VCA}$
+# Transforming data using $\; \texttt{VCA}$
 If you wish to use $\texttt{VCA}$ instead of $\texttt{OAVI}$ to obtain your transformation, then here we will briefly explain how you can go about it.
 
 ## Choosing the right transformation
