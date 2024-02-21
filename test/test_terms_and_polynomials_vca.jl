@@ -19,7 +19,9 @@ end;
 
 @testset "Testing suite for the SetsVCA functions construct_SetsVCA, update_F, F_to_matrix, update_V, V_to_matrix,
 update_C, construct_border, evaluate_transformation" begin
-    X = [[0.1 0.4]; [0.2 0.5]; [0.3 0.6]]
+    X = [   [0.1 0.4]; 
+            [0.2 0.5]; 
+            [0.3 0.6]   ]
     
     # test construct_SetsVCA
     sets_VCA = construct_SetsVCA(X)
@@ -45,7 +47,7 @@ update_C, construct_border, evaluate_transformation" begin
     @test sets_VCA.F_coefficient_vectors[2] == F_coeff
     
     # test update_V
-    V_coeff = Matrix([[0.5;];;])
+    V_coeff = 0.5 * ones(Float64, 1, 1)
     V_eval = [  [0.1];
                 [0.1];
                 [0.2]   ]
