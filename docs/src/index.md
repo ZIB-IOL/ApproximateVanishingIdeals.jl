@@ -1,7 +1,9 @@
 # ApproximateVanishingIdeals.jl
 
-[![Dev](https://img.shields.io/badge/docs-latest%20release-blue.svg)](https://zib-iol.github.io/ApproximateVanishingIdeals.jl)
-
+[![Build Status](https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl/workflows/CI/badge.svg)](https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl/actions)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://zib-iol.github.io/ApproximateVanishingIdeals.jl)
+[![Coverage](https://codecov.io/gh/ZIB-IOL/ApproximateVanishingIdeals.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ZIB-IOL/ApproximateVanishingIdeals.jl)
+   
 This package is a toolbox for polynomial feature extraction and transformation using the Oracle Approximate Vanishing Ideal Algorithm.
 
 ## Overview
