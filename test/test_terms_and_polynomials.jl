@@ -24,12 +24,12 @@ include("../src/oracle_avi.jl")
     
   G_coefficient_vectors = update_coefficient_vectors(G_coefficient_vectors, vec1)
     
-  @test G_coefficient_vectors == Matrix([[1., 1., 1., 1.];;
-                                         [2., 0., 0., 0.];;
-                                         [0., 2., 0., 0.];;
-                                         [0., 0., 2., 0.];;
-                                         [0., 0., 0., 2.];;
-                                         [0., 0., 0., 3.];;]')
+  @test G_coefficient_vectors == Matrix([[1. 1. 1. 1.];
+                                         [2. 0. 0. 0.];
+                                         [0. 2. 0. 0.];
+                                         [0. 0. 2. 0.];
+                                         [0. 0. 0. 2.];
+                                         [0. 0. 0. 3.];])
 end
 
 
@@ -38,9 +38,9 @@ end
         X_train = rand(2*i, 3)
         X_train_transformed, sets_train = fit_oavi(X_train)
         
-        if X_train_transformed != nothing
+        if X_train_transformed !== nothing
             X_test_transformed, sets_test = apply_G_transformation(sets_train, X_train)
-            @test X_test_transformed != nothing            
+            @test X_test_transformed !== nothing            
             @test all(abs.(X_test_transformed) .- X_train_transformed .<= 1.0e-10)
         end
     end

@@ -19,7 +19,7 @@ end;
 
 @testset "Testing suite for the SetsVCA functions construct_SetsVCA, update_F, F_to_matrix, update_V, V_to_matrix,
 update_C, construct_border, evaluate_transformation" begin
-    X = [[0.1; 0.2; 0.3];; [0.4; 0.5; 0.6];;]
+    X = Matrix([[0.1; 0.2; 0.3];; [0.4; 0.5; 0.6];;])
     
     # test construct_SetsVCA
     sets_VCA = construct_SetsVCA(X)
