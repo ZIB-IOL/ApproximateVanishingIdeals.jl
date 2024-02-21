@@ -12,7 +12,8 @@ The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm was designed 
 ```math
 \min_{x \in C} f(x),
 ```
-where $f$ is a differentiable convex function and $C$ is a compact and convex set. Usually $f$ will be of the form
+where $f$ is a differentiable convex function and $C$ is a compact and convex set.
+Usually $f$ will be of the form:
 ```math
 f(x) = \|Ax + b\|_2^2.
 ```
