@@ -5,21 +5,21 @@ This section contains the main algorithms of the package.
 ## OAVI
 
 ```@autodocs
-Modules = [AVI]
+Modules = [ApproximateVanishingIdeals]
 Pages = ["oracle_avi.jl"]
 ```
 
 ## VCA
 
 ```@docs
-fit_oavi
+fit_vca
 ```
 
 ```@docs
-AVI.find_range_null_vca
+ApproximateVanishingIdeals.find_range_null_vca
 ```
 ```@docs
-AVI.evaluate_vca
+ApproximateVanishingIdeals.evaluate_vca
 ```
 
 ## Index 

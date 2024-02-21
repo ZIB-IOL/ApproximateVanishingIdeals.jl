@@ -38,7 +38,7 @@ function L2Loss(data::Matrix{Float64},
     end
         
     # A_b
-    if data_labels != nothing
+    if data_labels !== nothing
         A_b = 2/m * data_labels
     else
         A_b = 2/m * (A' * b)
@@ -47,14 +47,14 @@ function L2Loss(data::Matrix{Float64},
     # A_squared_inv
     A_squared_inv = nothing
     solution = nothing
-    if data_squared_inverse != nothing
+    if data_squared_inverse !== nothing
         A_squared_inv = m/2 * data_squared_inverse
         solution = - data_squared_inverse * data_labels
         @assert lambda == 0. "Regularization not implemented for hessian-based algorithms."
     end
         
     # b_squared
-    if labels_squared != nothing
+    if labels_squared !== nothing
         b_squared = 2/m * labels_squared
     else
         b_squared = 2/m * b' * b

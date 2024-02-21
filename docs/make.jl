@@ -1,10 +1,10 @@
 using Documenter
-using AVI
+using ApproximateVanishingIdeals
 
 makedocs(
-    sitename="AVI.jl",
-    modules=[AVI],
-    format=Documenter.HTML(repolink="https://github.com/ZIB-IOL/AVI.jl.git"),
+    sitename="ApproximateVanishingIdeals.jl",
+    modules=[ApproximateVanishingIdeals],
+    format=Documenter.HTML(repolink="https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl.git"),
     pages=[
         "Home" => "index.md",
         "How does it work?" => "basics.md",
@@ -28,7 +28,7 @@ makedocs(
 
 
 deploydocs(
-            repo="github.com/ZIB-IOL/AVI.jl.git",
+            repo="github.com/ZIB-IOL/ApproximateVanishingIdeals.jl.git",
             devbranch="main",
             devurl="dev",
             target="build",

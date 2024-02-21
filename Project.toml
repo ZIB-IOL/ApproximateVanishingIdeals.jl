@@ -1,23 +1,23 @@
-name = "AVI"
-uuid = "6a7daa49-fd26-4e10-acce-e1e733c18dcd"
+name = "ApproximateVanishingIdeals"
+uuid = "5c3d299b-aa2f-43dc-84cc-e9c547fd880b"
 authors = ["ZIB-IOL"]
 version = "0.1.0"
 
 [deps]
-FrankWolfe     = "f55ce6ea-fdc5-4628-88c5-0087fe54bd30"
-LinearAlgebra  = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-Random         = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-Test           = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+FrankWolfe      = "f55ce6ea-fdc5-4628-88c5-0087fe54bd30"
+LinearAlgebra   = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random          = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Test            = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-FrankWolfe  = "0.3.1"
-julia       = "1"
+FrankWolfe      = "0.3.1"
+julia           = "1"
 
 [extras] 
-CSV         = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-DataFrames  = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
-Documenter  = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-Literate    = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+CSV             = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames      = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Documenter      = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Literate        = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 
 [targets]
 test = ["CSV", "DataFrames", "Documenter", "Literate"]

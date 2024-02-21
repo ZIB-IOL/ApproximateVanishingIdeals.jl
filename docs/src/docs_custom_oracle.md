@@ -13,7 +13,7 @@ Writing this in the form of matrix-vector multiplication, we get
 Now we can easily see which combinations of $A$ and $b$ we need. Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
 
 ````julia docs_custom_oracle
-using AVI
+using ApproximateVanishingIdeals
 using FrankWolfe
 using LinearAlgebra
 using Random

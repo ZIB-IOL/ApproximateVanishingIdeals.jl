@@ -7,7 +7,7 @@ Unlike $\texttt{OAVI}$, $\texttt{VCA}$ does not enjoy a known relation between t
 Once again, let's begin by creating or reading in our data set.
 
 ````julia docs_vca_transformation
-using AVI
+using ApproximateVanishingIdeals
 using DataFrames
 using CSV
 using Random
@@ -81,7 +81,7 @@ We perform the same sanity check as for $\texttt{OAVI}$ to see if the dimension 
 
 ````julia docs_vca_transformation
 # get all polynomials into single matrix
-polys = AVI.V_to_matrix(best_sets_vca)
+polys = ApproximateVanishingIdeals.V_to_matrix(best_sets_vca)
 
 println("Number of vanishing polynomials: ", size(polys, 2))
 size(best_transform_vca, 2) == size(X_test_transformed_vca, 2) == size(polys, 2)
