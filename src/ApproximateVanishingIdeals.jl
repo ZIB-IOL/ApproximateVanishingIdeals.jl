@@ -1,4 +1,4 @@
-module AVI
+module ApproximateVanishingIdeals
 
 using LinearAlgebra
 using FrankWolfe

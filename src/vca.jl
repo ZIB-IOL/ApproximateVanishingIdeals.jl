@@ -52,17 +52,17 @@ Performs FindRangeNull (using SVD) for VCA.
 Reference: https://proceedings.mlr.press/v28/livni13.html
 
 # Arguments
-- 'F::Union{Matrix{Float64}, Matrix{Int64}}': TBD
-- 'C::Union{Matrix{Float64}, Matrix{Int64}}': TBD
+- 'F::Matrix{Float64}': TBD
+- 'C::Matrix{Float64}': TBD
 - 'psi::Float64': vanishing parameter
 
 # Returns
-- 'V_coefficient_vectors::Union{Matrix{Float64}, Matrix{Int64}}': Coefficient vectors of polynomials we append to V.
-- 'V_evaluation_vectors::Union{Matrix{Float64}, Matrix{Int64}}': Evaluation vectors of polynomials we append to V.
-- 'F_coefficient_vectors::Union{Matrix{Float64}, Matrix{Int64}}': Coefficient vectors of polynomials we append to F.
-- 'F_evaluation_vectors::Union{Matrix{Float64}, Matrix{Int64}}': Evaluation vectors of polynomials we append to F.
+- 'V_coefficient_vectors::Matrix{Float64}': Coefficient vectors of polynomials we append to V.
+- 'V_evaluation_vectors::Matrix{Float64}': Evaluation vectors of polynomials we append to V.
+- 'F_coefficient_vectors::Matrix{Float64}': Coefficient vectors of polynomials we append to F.
+- 'F_evaluation_vectors::Matrix{Float64}': Evaluation vectors of polynomials we append to F.
 """
-function find_range_null_vca(F::Union{Matrix{Float64}, Matrix{Int64}}, C::Union{Matrix{Float64}, Matrix{Int64}}, psi::Float64)
+function find_range_null_vca(F::Matrix{Float64}, C::Matrix{Float64}, psi::Float64)
     tmp_coefficient_vectors = zeros(Float64, size(F, 2) + size(C, 2), 0)
     tmp_evaluation_vectors = zeros(Float64, size(C, 1), 0)
     for i in 1:size(C, 2)

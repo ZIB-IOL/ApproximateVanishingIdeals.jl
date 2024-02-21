@@ -4,7 +4,7 @@ With basics about the method out of the way, let's take a look at how we can obt
 ## $\texttt{OAVI}$ transformation
 To obtain a simple transformation, one can proceed to follow the steps presented earlier. As explained, however, we recommend tweaking a couple of parameters to achieve better results. The two main arguments this applies to are $\psi$, the vanishing parameter, under the keyword `psi` and $\varepsilon$, the accuracy to which the oracle solves the problem, under the keyword `epsilon`. These are by default `psi=0.1` and `epsilon=1.0e-7`. Let's say we want to use `psi=0.005` and `epsilon=1.0e-5`, then the code should look as follows:
 ```julia
-using AVI
+using ApproximateVanishingIdeals
 
 X = your_data_set
 transformed_data, sets = fit_oavi(X; psi=0.005, epsilon=1.0e-5)
@@ -41,7 +41,7 @@ fit_oavi(X; oracle="ABM")
 ## $\texttt{VCA}$ transformation
 Apart from $\texttt{OAVI}$ with its multiple different possibilities of running, we also provide an implementation of the $\texttt{VCA}$ algorithm introduced in [Livni et al. (2013)](https://proceedings.mlr.press/v28/livni13.html). The algorithm is implemented in [`fit_vca`](@ref) and a feature transformation based on $\texttt{VCA}$ can be obtained by calling
 ```julia
-using AVI
+using ApproximateVanishingIdeals
 
 X = your_data_set
 X_transformed_vca, sets_vca = fit_vca(X)

@@ -19,7 +19,7 @@ end
 """
 Given the data X, this function constructs the intial state of 'SetsVCA'.
 """
-function construct_SetsVCA(X::Union{Matrix{Float64}, Matrix{Int64}})
+function construct_SetsVCA(X::Matrix{Float64})
     Cs = []
     Fs = 1/ sqrt(size(X, 1)) * [ones(Float64, size(X, 1), 1)]
     F_coefficient_vectors = [ones(Float64, 1, 1)]
@@ -31,7 +31,7 @@ end;
 
 
 """updates F sets"""
-function update_F(sets::SetsVCA, F_coefficient_vectors::Union{Matrix{Float64}, Matrix{Int64}}, F_evaluation_vectors::Matrix{Float64})
+function update_F(sets::SetsVCA, F_coefficient_vectors::Matrix{Float64}, F_evaluation_vectors::Matrix{Float64})
     sets.F_coefficient_vectors = append!(sets.F_coefficient_vectors, [F_coefficient_vectors])
     sets.Fs = append!(sets.Fs, [F_evaluation_vectors])
 end

@@ -3,13 +3,13 @@ This section contains information about the handling of terms and polynomials co
 
 ## Sets $\mathcal{O}$ and $\mathcal{G}$
 ```@autodocs
-Modules = [AVI]
+Modules = [ApproximateVanishingIdeals]
 Pages = ["terms_and_polynomials.jl"]
 ```
 
 ## Sets $\mathcal{F}$ and $\mathcal{V}$
 ```@autodocs
-Modules = [AVI]
+Modules = [ApproximateVanishingIdeals]
 Pages = ["terms_and_polynomials_vca.jl"]
 ```
 

@@ -11,7 +11,7 @@
 # \frac{1}{m} (\langle Ax, Ax\rangle + 2\langle Ax, b\rangle + \langle b, b\rangle) = \frac{1}{m}(x^\top A^\top A x + 2x^\top A^\top b + b^\top b).
 # ```
 # Let's write a function that computes all the necessary parts. Inlcuding a $\frac{2}{m}$ factor instead of $\frac{1}{m}$ is just personal preference. We simply divide by $2$ later.
-using AVI 
+using ApproximateVanishingIdeals
 using FrankWolfe
 using LinearAlgebra
 using Random

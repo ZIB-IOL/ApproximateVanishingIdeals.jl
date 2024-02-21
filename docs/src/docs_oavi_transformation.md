@@ -12,7 +12,7 @@ so tweaking the `psi` parameter is advised when searching for the best transform
 Let's read in some data first. To keep it general we will create some small random .csv file but feel free to read in your favorite data set.
 
 ````julia docs_find_transform
-using AVI
+using ApproximateVanishingIdeals
 using DataFrames
 using CSV
 using Random

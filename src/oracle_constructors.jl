@@ -110,7 +110,7 @@ Runs ABM algorithm to find coefficient vector and computes loss.
 """
 function abm(
         data::Matrix{Float64}, 
-        labels::Union{Vector{Float64}, Vector{Int64}},
+        labels::Vector{Float64},
         data_squared::Matrix{Float64}, 
         data_labels::Vector{Float64},
         labels_squared::Float64

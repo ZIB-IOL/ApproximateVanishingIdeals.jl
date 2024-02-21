@@ -1,6 +1,6 @@
 # How does it work?
 
-`AVI.jl` contains routines to construct approximately vanishing polynomials from data processed previously. Through the iterations, the data used for construction is expanded with the evaluation of non-leading terms over the data points $\texttt{X}$. 
+`ApproximateVanishingIdeals.jl` contains routines to construct approximately vanishing polynomials from data processed previously. Through the iterations, the data used for construction is expanded with the evaluation of non-leading terms over the data points $\texttt{X}$. 
 
 ## Oracle Approximate Vanishing Ideal algorithm ($\texttt{OAVI}$)
 

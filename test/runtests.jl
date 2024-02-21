@@ -2,6 +2,7 @@ using Test
 using FrankWolfe
 using LinearAlgebra
 using Random
+using ApproximateVanishingIdeals
 
 println("running tests...")
 println("-----------------------------------------------------------")
