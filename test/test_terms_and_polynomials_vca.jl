@@ -48,9 +48,9 @@ update_C, construct_border, evaluate_transformation" begin
     
     # test update_V
     V_coeff = 0.5 * ones(Float64, 1, 1)
-    V_eval = [  [0.1];
+    V_eval = reshape([  [0.1];
                 [0.1];
-                [0.2]   ]
+                [0.2]   ], 3, 1)
     update_V(sets_VCA, V_coeff, V_eval)
     @test sets_VCA.Vs[1] == V_eval
     @test sets_VCA.V_coefficient_vectors[1] == V_coeff
