@@ -49,8 +49,8 @@ update_C, construct_border, evaluate_transformation" begin
     # test update_V
     V_coeff = 0.5 * ones(Float64, 1, 1)
     V_eval = reshape([  [0.1];
-                [0.1];
-                [0.2]   ], 3, 1)
+                        [0.1];
+                        [0.2]   ], 3, 1)
     update_V(sets_VCA, V_coeff, V_eval)
     @test sets_VCA.Vs[1] == V_eval
     @test sets_VCA.V_coefficient_vectors[1] == V_coeff
@@ -58,26 +58,26 @@ update_C, construct_border, evaluate_transformation" begin
     update_V(sets_VCA, empty_vec, empty_vec)
     @test sets_VCA.Vs[2] == empty_vec
     @test sets_VCA.V_coefficient_vectors[2] == empty_vec
-    V_coeff = [ [0.5];
-                [0.2];
-                [0.0]   ]
-    V_eval = [  [-0.3];
-                [0.0];
-                [0.2]   ]
+    V_coeff = reshape([ [0.5];
+                        [0.2];
+                        [0.0]   ], 3, 1)
+    V_eval = reshape([  [-0.3];
+                        [0.0];
+                        [0.2]   ], 3, 1)
     update_V(sets_VCA, V_coeff, V_eval)
     @test sets_VCA.Vs[3] == V_eval
     @test sets_VCA.V_coefficient_vectors[3] == V_coeff
     
     # test update_C
-    C_evals = [ [0.1];
-                [0.2];
-                [0.3]   ]
+    C_evals = reshape([ [0.1];
+                        [0.2];
+                        [0.3]   ], 3, 1)
     update_C(sets_VCA, C_evals)
     @test sets_VCA.Cs[1] == C_evals
     
     # test F_to_matrix
-    F_coeff = [ [1.0];
-                [-1.0]  ]
+    F_coeff = reshape([ [1.0];
+                        [-1.0]  ], 2, 1)
     F_eval  = [ [-0.5 0.6];
                 [0.3 0.9];
                 [0.4 0.8]   ]
