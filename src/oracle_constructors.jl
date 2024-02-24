@@ -55,9 +55,9 @@ function conditional_gradients(
     # compute starting point
     if inverse_hessian_boost in ["weak", "full"]
         x0 = l1_projection(solution; radius=tau-1)
+        x0 = reshape(x0, length(x0))
     else
         x0 = compute_extreme_point(region, zeros(Float64, n))
-        x0 = Vector(x0)
     end
     
     # run oracle to find coefficient vector
