@@ -99,6 +99,8 @@ function fit_oavi(
              
             # built-in ABM
             elseif oracle == "ABM"
+                term_evaluated = reshape(term_evaluated, length(term_evaluated))
+                data_term_evaluated = reshape(data_term_evaluated, length(data_term_evaluated))
                 coefficient_vector, loss = abm(data, term_evaluated, data_squared, data_term_evaluated, term_evaluated_squared)
             
             # external oracle
