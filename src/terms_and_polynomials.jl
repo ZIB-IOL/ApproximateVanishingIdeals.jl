@@ -98,7 +98,7 @@ end
 updates G sets
 """
 function update_G(sets, G_coefficient_vectors=nothing)
-    if G_coefficient_vectors != nothing
+    if G_coefficient_vectors !== nothing
         if size(sets.G_evaluations, 2) == 0
             sets.G_evaluations = hcat(sets.O_evaluations, sets.border_evaluations_purged[end]) * G_coefficient_vectors
         else
@@ -114,8 +114,8 @@ end
 updates leading terms
 """
 function update_leading_terms(sets, leading_terms=nothing)
-    if sets.leading_terms == nothing
-        if leading_terms != nothing
+    if sets.leading_terms === nothing
+        if leading_terms !== nothing
             sets.leading_terms = leading_terms
         end
     else
