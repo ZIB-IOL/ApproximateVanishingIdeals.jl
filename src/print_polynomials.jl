@@ -3,8 +3,10 @@ Prints the polynomials obtained through OAVI as a LaTeX string.
 
 'digits' can be used to determine how many decimal places you want to round to. 
 Terms with rounded coefficient values 0.0 are omitted and coefficients with value 1.0 are omitted.
+
+'ret' can be used to return vector with poly strings, instead of printing the polynomials
 """
-function print_polynomials(sets; digits::Int64=2)
+function print_polynomials(sets; digits::Int64=2, ret=false)
     deg_ids = sets.O_degree_indices
 
     lt_idx_start = 1
@@ -34,7 +36,7 @@ function print_polynomials(sets; digits::Int64=2)
             
             # all terms together in deg-lex ordering to fit the coefficient vector
             all_terms = hcat(lts, terms)
-            all_terms, _ = AVI.deg_lex_sort(all_terms)
+            all_terms, _ = deg_lex_sort(all_terms)
             all_terms = all_terms[:, end:-1:1]
     
             for (j, col) in enumerate(eachcol(coeff_vec))   
@@ -59,7 +61,9 @@ function print_polynomials(sets; digits::Int64=2)
                         elseif coeff < 0.0
                             poly_string = poly_string[1:length(poly_string)-2]
                             poly_string *= "- "
-                            poly_string *= string(abs(coeff))
+                            if abs(coeff) !== 1.0
+                                poly_string *= string(abs(coeff))
+                            end
                             poly_string *= convert_term_to_latex(all_terms[:, k])
                             poly_string *= " + "
                         end
@@ -77,8 +81,13 @@ function print_polynomials(sets; digits::Int64=2)
             lt_idx_start = lt_idx_end + 1
         end 
     end
-    for (i, poly) in enumerate(all_polys)
-        println(poly)
+
+    if ret
+        return all_polys
+    else
+        for (i, poly) in enumerate(all_polys)
+            println(poly)
+        end
     end
 end
 
@@ -92,8 +101,6 @@ function convert_term_to_latex(term::Vector{Int64})
         elseif term[i] > 0
             term_string *= "x_{$(i)}^{$(term[i])}"
         end
-    end
-    if term_string == ""
     end
     return term_string
 end
