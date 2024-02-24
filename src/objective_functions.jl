@@ -61,7 +61,7 @@ function L2Loss(data::Matrix{Float64},
     end
         
     function evaluate_function(x)
-        return ((1 / 2) * (x' * A_squared * x) + (A_b' * x) + (1 / 2) * b_squared)
+        return ((1 / 2) * (x' * A_squared * x) .+ (A_b' * x) .+ (1 / 2) * b_squared)
     end
 
     function evaluate_gradient!(storage, x)

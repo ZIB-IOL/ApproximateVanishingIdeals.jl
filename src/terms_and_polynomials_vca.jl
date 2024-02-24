@@ -157,7 +157,7 @@ Evaluates the transformation corresponding to the polynomials in V w.r.t. the fu
 - 'number_of_terms::Int64': Number of non-vanishing terms.
 - 'degree::Float64': Average degree of polynomials in V.
 """
-function evaluate_transformation(sets::SetsVCA)
+function evaluate_transformation_vca(sets::SetsVCA)
     total_number_of_zeros, total_number_of_entries, avg_sparsity, degree = 0, 0, 0.0, 0
     number_of_polynomials = 0
     for i in 1:size(sets.V_coefficient_vectors, 1)

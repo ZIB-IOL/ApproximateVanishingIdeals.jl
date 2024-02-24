@@ -55,6 +55,7 @@ function conditional_gradients(
     # compute starting point
     if inverse_hessian_boost in ["weak", "full"]
         x0 = l1_projection(solution; radius=tau-1)
+        x0 = reshape(x0, length(x0))
     else
         x0 = compute_extreme_point(region, zeros(Float64, n))
         x0 = Vector(x0)
@@ -63,6 +64,9 @@ function conditional_gradients(
     # run oracle to find coefficient vector
     if inverse_hessian_boost == "weak"
         coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
+        if typeof(coefficient_vector) <: FrankWolfe.ScaledHotVector
+            coefficient_vector = convert(Vector, coefficient_vector)
+        end
         coefficient_vector = vcat(coefficient_vector, [1])
     
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
