@@ -178,7 +178,7 @@ end
 Evaluates the transformation corresponding to the polynomials in G_coefficient_vectors.
 
 # Arguments
-- 'sets::SetsOandG': instance of SetsOandG, containing information on transformation
+- 'sets::SetsOandG': instance of SetsOandG, containing transformation
 
 # Returns
 - 'total_number_of_zeros::Int64': Sum of all zero entries in coefficient_vectors in G_coefficient_vectors.
@@ -188,12 +188,12 @@ Evaluates the transformation corresponding to the polynomials in G_coefficient_v
 - 'number_of_terms::Int64': Number of terms in O.
 - 'degree::Float64': Average degree of polynomials in G.
 """
-function evaluate_transformation(sets::SetsOandG)
+function evaluate_transformation_oavi(sets::SetsOandG)
     number_of_polynomials, total_number_of_zeros, total_number_of_entries, avg_sparsity, degree = 0, 0, 0, 0.0, 0
     for i in 1:size(sets.G_coefficient_vectors, 1)
         coefficient_vectors = sets.G_coefficient_vectors[i]
-        if coefficient_vectors != nothing && size(coefficient_vectors, 2) > 0
-            degree += (i-1) * size(coefficient_vectors, 2)  # (i-1) because we start with degree 0 but julia indexing starts at 1
+        if coefficient_vectors !== nothing && size(coefficient_vectors, 2) > 0
+            degree += (i-1) * size(coefficient_vectors, 2) 
             indices = find_last_non_zero_entries(coefficient_vectors)
             for j in 1:size(coefficient_vectors, 2)
                 poly = coefficient_vectors[1:indices[j], j]

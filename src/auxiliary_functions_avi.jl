@@ -24,12 +24,12 @@ function streaming_matrix_updates(A, A_squared, A_a, a, a_squared; A_squared_inv
             #                            | s_2.T s_3|
 
             A_squared_inv_b = A_squared_inv * b
-            b_A_squared_inv_b = (b' * A_squared_inv_b)[1]
+            b_A_squared_inv_b = (b' * A_squared_inv_b)
 
-            s_2 = A_squared_inv + ((A_squared_inv_b * A_squared_inv_b') ./ (a_squared - b_A_squared_inv_b))
+            s_2 = A_squared_inv + (A_squared_inv_b * A_squared_inv_b') ./ (a_squared .- b_A_squared_inv_b)
             s_2 = (s_2 * b) ./ a_squared
 
-            s_3 = (1 - (b' * s_2)[1]) / a_squared
+            s_3 = (1 .- (b' * s_2)) ./ a_squared
 
             S_1 = A_squared_inv - (A_squared_inv_b * s_2')
 

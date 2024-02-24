@@ -10,6 +10,8 @@ Creates OAVI feature transformation fitted to X_train
 - 'lambda::Float64': regularization parameter
 - 'oracle::Union{String, <:Function}': string denoting which predefined constructor to use OR constructor function.
                                         (external constructor function MUST have 'data' and 'labels' as varargs)
+- 'max_iters::Int64': max number of iterations in oracle
+- 'inverse_hessian_boost::String': whether or not to use IHB. Choose from "false", "weak" or "full".
 - 'oracle_kwargs::Vector': Array containing keyword arguments for external constructor functions
 
 # Returns
@@ -33,8 +35,6 @@ function fit_oavi(
         D = ceil(- log(psi)/log(4))
         tau = 1. * (3/2)^D
     end
-    
-    m, n = size(X_train)
     
     sets = construct_SetsOandG(X_train)
     
@@ -79,7 +79,7 @@ function fit_oavi(
             # prepare data w.r.t. current border term
             term_evaluated = border_evaluations[:, col_idx] 
             data_term_evaluated = data' * term_evaluated
-            term_evaluated_squared = term_evaluated' * term_evaluated
+            term_evaluated_squared = norm(term_evaluated, 2)^2
             
             # built-in Frank-Wolfe oracle
             if oracle in ["CG", "BCG", "BPCG"]
