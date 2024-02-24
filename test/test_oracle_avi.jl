@@ -43,3 +43,22 @@ end;
     @test all(loss_list .<= 0.05)
   end
 end;
+
+
+@testset "Test suite for evaluate_oavi (and regularization)" begin
+  for oracle in ["CG", "BPCG", "ABM"]
+    m, n = rand(15:25), rand(4:10)
+    X_tr = rand(m, n)
+    X_tr_transformed, sets_tr = fit_oavi(X_tr; oracle=oracle)
+    X_te_transformed, sets_te = evaluate_oavi(sets_tr, X_tr)
+
+    @test all(X_tr_transformed .- X_te_transformed .<= 1.0e-10)
+
+    if oracle !== "ABM"
+        X_train = rand(10, 3)
+        X_train_transformed, sets_train = fit_oavi(X_train; psi=0.01, lambda=0.1, oracle=oracle)
+        X_test_transformed, sets_test = evaluate_oavi(sets_train, X_train)
+        @test all(X_train_transformed .- X_test_transformed .<= 1.0e-10)
+    end
+  end
+end;

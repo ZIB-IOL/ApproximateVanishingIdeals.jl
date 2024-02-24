@@ -15,35 +15,30 @@ Creates and returns objective function, gradient and solution (through inversion
 - 'evaluate_function<:Function': objective function
 - 'evaluate_gradient!<:Function': gradient of objective function, adjusted to FrankWolfe requirements
 """
-function L2Loss(data::Matrix{Float64}, 
+function L2Loss(
+        data::Matrix{Float64}, 
         labels::Vector{Float64},
         lambda::Union{Float64, Int64}, 
         data_squared::Matrix{Float64}, 
         data_labels::Vector{Float64},
         labels_squared::Float64;
-        data_squared_inverse::Union{Matrix{Float64}, Nothing}=nothing)
+        data_squared_inverse::Union{Matrix{Float64}, Nothing}=nothing
+    )
+
     A = data
     m, n = size(data)
     b = labels
         
     # A_squared
-    if data_squared !== nothing
-        A_squared = 2/m * data_squared
-    else
-        A_squared = 2/m * A' * A
-    end
-        
+    A_squared = 2/m * data_squared
+
     if lambda != 0.
         A_squared = A_squared + lambda * Matrix(I, n, n)
     end
         
     # A_b
-    if data_labels !== nothing
-        A_b = 2/m * data_labels
-    else
-        A_b = 2/m * (A' * b)
-    end
-        
+    A_b = 2/m * data_labels
+
     # A_squared_inv
     A_squared_inv = nothing
     solution = nothing
@@ -54,11 +49,7 @@ function L2Loss(data::Matrix{Float64},
     end
         
     # b_squared
-    if labels_squared !== nothing
-        b_squared = 2/m * labels_squared
-    else
-        b_squared = 2/m * b' * b
-    end
+    b_squared = 2/m * labels_squared
         
     function evaluate_function(x)
         return ((1 / 2) * (x' * A_squared * x) .+ (A_b' * x) .+ (1 / 2) * b_squared)
