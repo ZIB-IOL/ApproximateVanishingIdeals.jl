@@ -58,6 +58,7 @@ function conditional_gradients(
         x0 = reshape(x0, length(x0))
     else
         x0 = compute_extreme_point(region, zeros(Float64, n))
+        x0 = Vector(x0)
     end
     
     # run oracle to find coefficient vector
