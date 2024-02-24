@@ -94,7 +94,7 @@ update_C, construct_border, evaluate_transformation" begin
                         [0.2 0.2]   ] 
     
     # test evaluate_transformation
-    (zeroes, entries, avg_sparsity, number_of_polynomials, number_of_terms, degree) = evaluate_transformation(sets_VCA)
+    (zeroes, entries, avg_sparsity, number_of_polynomials, number_of_terms, degree) = evaluate_transformation_vca(sets_VCA)
     @test zeroes == 1
     @test entries == 4
     @test avg_sparsity - 0.25 <= 1.0e-10
