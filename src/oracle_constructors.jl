@@ -120,21 +120,20 @@ function abm(
         labels_squared::Float64
         )    
     data_with_labels = hcat(data, labels)
-    m = size(data_with_labels, 1)
+    m, n = size(data_with_labels)
     
     # prepare data for SVD and perform SVD
-    if size(data_with_labels, 1) > size(data_with_labels, 2)
+    if m > n
         data_squared_with_labels = hcat(data_squared, data_labels)
         bottom_row = vcat(data_labels, labels_squared)
-        bottom_row = bottom_row'
+        bottom_row = transpose(bottom_row)
         data_squared_with_labels = vcat(data_squared_with_labels, bottom_row)
         F = svd(data_squared_with_labels)
     else
-        F = svd(data_with_labels)
+        F = svd(data_with_labels; full=true)
     end
-    
     # extract coefficient vector
-    U, S, Vt = F.U, F.S, F.Vt
+    Vt = F.Vt
     coefficient_vector = Vt[:, end]
     loss = 1/size(data, 1) * norm(data_with_labels * coefficient_vector, 2)^2
     
