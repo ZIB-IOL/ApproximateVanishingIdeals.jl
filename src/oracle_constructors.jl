@@ -63,6 +63,7 @@ function conditional_gradients(
     # run oracle to find coefficient vector
     if inverse_hessian_boost == "weak"
         coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
+        coefficient_vector = convert(Vector, coefficient_vector)
         coefficient_vector = vcat(coefficient_vector, [1])
     
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2

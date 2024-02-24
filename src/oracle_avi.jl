@@ -83,9 +83,19 @@ function fit_oavi(
             
             # built-in Frank-Wolfe oracle
             if oracle in ["CG", "BCG", "BPCG"]
-                coefficient_vector, loss = conditional_gradients(oracle, data, term_evaluated, 
-                lambda, data_squared, data_term_evaluated, term_evaluated_squared; data_squared_inverse=data_squared_inverse, 
-                psi=psi, epsilon=epsilon, tau=1. * tau, inverse_hessian_boost=inverse_hessian_boost, max_iters=max_iters)
+                coefficient_vector, loss = conditional_gradients(   oracle, 
+                                                                    data, term_evaluated, 
+                                                                    lambda, 
+                                                                    data_squared, 
+                                                                    data_term_evaluated, 
+                                                                    term_evaluated_squared; 
+                                                                    data_squared_inverse=data_squared_inverse, 
+                                                                    psi=psi, 
+                                                                    epsilon=epsilon, 
+                                                                    tau=1. * tau, 
+                                                                    inverse_hessian_boost=inverse_hessian_boost, 
+                                                                    max_iters=max_iters
+                                                                )
              
             # built-in ABM
             elseif oracle == "ABM"
