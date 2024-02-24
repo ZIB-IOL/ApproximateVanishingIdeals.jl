@@ -49,9 +49,9 @@ end;
     X_train = rand(m, n)
     X_train_transformed, sets_train = fit_vca(X_train)
     
-    if X_train_transformed != nothing
+    if X_train_transformed !== nothing
         X_test_transformed, sets_test = evaluate_vca(sets_train, X_train)
-        @test X_test_transformed != nothing
+        @test X_test_transformed !== nothing
         @test all(X_train_transformed .- X_test_transformed .<= 1.0e-10)
         
         F_train_coeffs = sets_train.F_coefficient_vectors

@@ -17,8 +17,7 @@ using Test
 end;
 
 
-@testset "Testing suite for the SetsVCA functions construct_SetsVCA, update_F, F_to_matrix, update_V, V_to_matrix,
-update_C, construct_border, evaluate_transformation" begin
+@testset "Testing suite for all VCA functions" begin
     X = [   [0.1 0.4]; 
             [0.2 0.5]; 
             [0.3 0.6]   ]
