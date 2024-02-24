@@ -1,5 +1,5 @@
 """
-finds unique columns in matrix x1 and returns only unique elements in x1 as well as corresponding columns in x2.
+finds unique columns in matrix x1 and returns only those columns in x1, as well as corresponding columns in x2.
 """
 function get_unique_columns(x1::Matrix, x2::Matrix=zeros(0, 0))
     cx1, cx2 = copy(x1), copy(x2)
@@ -73,7 +73,18 @@ In case of a zero-column returns first index.
 function find_first_non_zero_entries(matrix::Matrix)
     indices = Array{Int64}([])
     @inbounds for a in eachcol(matrix)
-        indices = append!(indices, findmax(a)[2])
+        idx = 0
+        for (i, val) in enumerate(a)
+            if val != 0
+                idx = i
+                break
+            end
+        end
+        if idx > 0
+            append!(indices, idx)
+        else
+            append!(indices, 1)
+        end
     end
     return indices
 end

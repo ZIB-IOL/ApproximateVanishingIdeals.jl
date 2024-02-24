@@ -41,10 +41,6 @@ function construct_border(terms::Matrix{Int64},
                           degree_1_terms_evaluated::Matrix{Float64}=zeros(Float64, 0, 0), 
                           purging_terms::Matrix{Int64}=zeros(Int64, 0, 0)
                           )
-
-    if typeof(X_train) != Matrix{Float64}
-        X_train = vecvec_to_mat(X_train)
-    end
         
     dim = size(X_train, 2)  
     
@@ -70,8 +66,7 @@ function construct_border(terms::Matrix{Int64},
     
     border_terms_raw, border_evaluations_raw, raw_permutation = deg_lex_sort(border_terms_raw, border_evaluations_raw)
     
-    border_terms_purged, border_evaluations_purged, unique_indices = get_unique_columns(
-                                                                        border_terms_raw, border_evaluations_raw)
+    border_terms_purged, border_evaluations_purged, unique_indices = get_unique_columns(border_terms_raw, border_evaluations_raw)
     
     if size(purging_terms, 2) != 0
         border_terms_purged, border_evaluations_purged, unique_indices_2 = purge(
