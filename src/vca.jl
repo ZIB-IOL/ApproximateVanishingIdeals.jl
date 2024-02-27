@@ -52,8 +52,8 @@ Performs FindRangeNull (using SVD) for VCA.
 Reference: https://proceedings.mlr.press/v28/livni13.html
 
 # Arguments
-- 'F::Matrix{Float64}': TBD
-- 'C::Matrix{Float64}': TBD
+- 'F::Matrix{Float64}': evaluation of F polynomials
+- 'C::Matrix{Float64}': evaluation of C polynomials
 - 'psi::Float64': vanishing parameter
 
 # Returns
