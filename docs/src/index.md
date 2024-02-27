@@ -14,7 +14,7 @@ The Oracle Approximate Vanishing Ideal ($\texttt{OAVI}$) algorithm was designed 
 ```
 where $f$ is a differentiable convex function and $C$ is a compact and convex set. Usually $f$ will be of the form
 ```math
-f(x) = \|Ax + b\|_2^2.
+f(x) = \frac{1}{m}\|Ax + b\|_2^2.
 ```
 
 ## Installation
@@ -24,11 +24,11 @@ Pkg.add(url="https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl.git")
 ```
 
 ## Getting started
-We provide built-in oracles that construct the objective function and feasible region and solve the optimization problem with a version of the Frank-Wolfe (conditional gradients) algorithm implemented in [FrankWolfe.jl](https://github.com/ZIB-IOL/FrankWolfe.jl/tree/master). Obtaining a basic feature transformation for some random data $\texttt{X}$ is as simple as:
+We provide built-in oracles that construct the objective function and feasible region and solve the optimization problem with a version of the Frank-Wolfe (conditional gradients) algorithm implemented in [FrankWolfe.jl](https://github.com/ZIB-IOL/FrankWolfe.jl/tree/master). Obtaining a basic feature transformation for some random data $X$ is as simple as:
 
 ```julia
 using ApproximateVanishingIdeals
-using random
+using Random
 
 X = rand(10000, 5)
 X_transformed, sets = fit_oavi(X);
