@@ -47,6 +47,7 @@ end
     @test norm(vec2) ≈ norm(l1_projection(vec2))
 end;
 
+
 @testset "Test suite for streaming_matrix_updates" begin
   dim = 30000
   A = rand(dim, 500)
