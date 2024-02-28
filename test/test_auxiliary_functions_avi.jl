@@ -45,5 +45,28 @@ end
     @test vec2 ≈ l1_projection(vec2)
     @test norm(l1_projection(vec2), 1) ≈ 1
     @test norm(vec2) ≈ norm(l1_projection(vec2))
+end;
 
-  end
+@testset "Test suite for streaming_matrix_updates" begin
+  dim = 30000
+  A = rand(dim, 500)
+
+  A_sq = transpose(A) * A
+  A_sq_inv = inv(A_sq)
+
+  a = rand(dim, 1)
+  a_sq = (transpose(a) * a)[1]
+
+  A_a = transpose(A) * a 
+
+  B, B_2, B_2_1 = streaming_matrix_updates(A, A_sq, A_a, a, a_sq; A_squared_inv=A_sq_inv)
+
+  C = hcat(A, a)
+
+  C_2 = transpose(C) * C
+
+  C_2_1 = inv(C_2)
+
+  @test norm(C_2 - B_2) < 1.0e-8
+  @test norm(C_2_1 - B_2_1) < 1.0e-8
+end;
