@@ -17,17 +17,17 @@ function streaming_matrix_updates(A, A_squared, A_a, a, a_squared; A_squared_inv
         b = A_a
 
         B_squared = hcat(A_squared, b)
-        B_squared = vcat(B_squared, vcat(b, a_squared)')
+        B_squared = vcat(B_squared, transpose(vcat(b, a_squared)))
 
         if A_squared_inv !== nothing 
             # write B_squared_inv as S = | S_1, s_2|
             #                            | s_2.T s_3|
 
             A_squared_inv_b = A_squared_inv * b
-            b_A_squared_inv_b = (b' * A_squared_inv_b)
+            b_A_squared_inv_b = (transpose(b) * A_squared_inv_b)
 
-            s_2 = A_squared_inv + (A_squared_inv_b * A_squared_inv_b') ./ (a_squared .- b_A_squared_inv_b)
-            s_2 = (s_2 * b) ./ a_squared
+            s_2 = (A_squared_inv + (A_squared_inv_b * transpose(A_squared_inv_b)) ./ (a_squared .- b_A_squared_inv_b))
+            s_2 = - (s_2 * b) ./ a_squared
 
             s_3 = (1 .- (b' * s_2)) ./ a_squared
 

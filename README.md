@@ -21,7 +21,12 @@ f(x) = \frac{1}{m}\|Ax + b\|_2^2.
 ## Installation
 The most recent release is available via:
 ```julia
-Pkg.add(url="https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl.git")
+using Pkg
+Pkg.add("ApproximateVanishingIdeals")
+```
+Or get the latest main branch with:
+```julia
+Pkg.add(url="https://github.com/ZIB-IOL/ApproximateVanishingIdeals.jl", rev="main")
 ```
 
 ## Getting started
