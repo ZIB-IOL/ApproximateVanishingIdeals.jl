@@ -1,11 +1,13 @@
 using Test
+using LinearAlgebra
+using ApproximateVanishingIdeals
+const AVI = ApproximateVanishingIdeals
 
-include("../src/print_polynomials.jl")
 
 @testset "Test suite for print_polynomials" begin
     A = rand(10, 3)
 
-    sets = construct_SetsOandG(A)
+    sets = AVI.construct_SetsOandG(A)
 
     append!(sets.G_coefficient_vectors, [reshape(   [   -0.77, 
                                                         0.44, 
@@ -39,7 +41,7 @@ include("../src/print_polynomials.jl")
                 "x_{3}^{2} - x_{3} - 0.03x_{1} + 0.17"
             ]
 
-    constructed_polys = print_polynomials(sets; ret=true)
+    constructed_polys = AVI.print_polynomials(sets; ret=true)
 
     @test all(polys .== constructed_polys)
 end;
@@ -55,6 +57,6 @@ end;
 
     for i in 1:size(terms, 2)
         term = terms[:, i]
-        @test convert_term_to_latex(term) == converted_terms[i]
+        @test AVI.convert_term_to_latex(term) == converted_terms[i]
     end
 end;

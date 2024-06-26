@@ -82,7 +82,7 @@ function fit_oavi(
             term_evaluated_squared = norm(term_evaluated, 2)^2
             
             # built-in Frank-Wolfe oracle
-            if oracle in ["CG", "BCG", "BPCG"]
+            if oracle in ["CG", "Away", "AFW", "PCG", "Lazy", "LCG", "BCG", "BPCG"]
                 coefficient_vector, loss = conditional_gradients(   oracle, 
                                                                     data, term_evaluated, 
                                                                     lambda, 

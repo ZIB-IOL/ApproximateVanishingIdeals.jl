@@ -1,21 +1,17 @@
 using Test
 using FrankWolfe
+using LinearAlgebra
+using ApproximateVanishingIdeals
+const AVI = ApproximateVanishingIdeals
 
-include("../src/auxiliary_functions.jl")
-include("../src/terms_and_polynomials.jl")
-include("../src/oracle_constructors.jl") 
-include("../src/border_construction.jl")
-include("../src/objective_functions.jl")
-include("../src/auxiliary_functions_avi.jl")
-include("../src/oracle_avi.jl")
 
 @testset "Test suite for apply_G_transformation" begin
     for i in 1:5
         X_train = rand(2*i, 3)
-        X_train_transformed, sets_train = fit_oavi(X_train; psi=0.01)
+        X_train_transformed, sets_train = AVI.fit_oavi(X_train; psi=0.01)
         
         if X_train_transformed !== nothing
-            X_test_transformed, sets_test = apply_G_transformation(sets_train, X_train)
+            X_test_transformed, sets_test = AVI.apply_G_transformation(sets_train, X_train)
             @test X_test_transformed !== nothing            
             @test all(abs.(X_test_transformed) .- X_train_transformed .<= 1.0e-10)
         end
@@ -28,7 +24,7 @@ end;
                 [3 4];
                 [5 6]   ]
     
-    sets_avi = construct_SetsOandG(X_train)
+    sets_avi = AVI.construct_SetsOandG(X_train)
 
     sets_avi.G_coefficient_vectors = [nothing, nothing, [   [1 0];
                                                             [2 1];
@@ -41,7 +37,7 @@ end;
                                                                                     [0 0 0 1]   ]]
 
     (total_number_of_zeros, total_number_of_entries, avg_sparsity, number_of_polynomials, number_of_terms, degree
-        ) = evaluate_transformation_oavi(sets_avi)
+        ) = AVI.evaluate_transformation_oavi(sets_avi)
 
     @test total_number_of_zeros == 2
     @test total_number_of_entries == 16
