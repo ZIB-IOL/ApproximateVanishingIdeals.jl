@@ -1,8 +1,6 @@
-include("../src/terms_and_polynomials_vca.jl");
-include("../src/vca.jl");
-include("../src/auxiliary_functions.jl");
-
 using LinearAlgebra
+using ApproximateVanishingIdeals
+const AVI = ApproximateVanishingIdeals
 using Random
 using Test
 
@@ -12,7 +10,7 @@ using Test
     max_degree = 10
     for i in 1:5
         X_train = rand(i, 3)
-        X_train_transformed, sets_VCA = fit_vca(X_train; psi=psi, max_degree=max_degree)
+        X_train_transformed, sets_VCA = AVI.fit_vca(X_train; psi=psi, max_degree=max_degree)
         for j in 1:size(X_train_transformed, 2)
             @test 1/i * norm(X_train_transformed[:, j], 2)^2 <= psi
         end
@@ -26,7 +24,7 @@ end;
         C = rand(5, 2*run)
         psi = 0.1
         
-        V_coeffs, V_evals, F_coeffs, F_evals = find_range_null_vca(F, C, psi)
+        V_coeffs, V_evals, F_coeffs, F_evals = AVI.find_range_null_vca(F, C, psi)
         
         for i in 1:size(F_coeffs, 2)
             val = abs.(hcat(F, C) * F_coeffs[:, i] - F_evals[:, i])
@@ -47,10 +45,10 @@ end;
 @testset "Testing suite for evaluate_vca" begin 
     m, n = rand(1:50), rand(1:50)
     X_train = rand(m, n)
-    X_train_transformed, sets_train = fit_vca(X_train)
+    X_train_transformed, sets_train = AVI.fit_vca(X_train)
     
     if X_train_transformed !== nothing
-        X_test_transformed, sets_test = evaluate_vca(sets_train, X_train)
+        X_test_transformed, sets_test = AVI.evaluate_vca(sets_train, X_train)
         @test X_test_transformed !== nothing
         @test all(X_train_transformed .- X_test_transformed .<= 1.0e-10)
         

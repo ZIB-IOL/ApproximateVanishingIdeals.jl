@@ -42,38 +42,47 @@ function conditional_gradients(
     
     # determine oracle
     if oracle_type == "CG"
-        oracle = frank_wolfe
+        oracle = FrankWolfe.frank_wolfe
+    elseif oracle_type == "Away" || oracle_type == "AFW"
+        oracle = FrankWolfe.away_frank_wolfe
+    elseif oracle_type == "PCG"
+        oracle = FrankWolfe.pairwise_frank_wolfe
+    elseif oracle_type == "Lazy" || oracle_type == "LCG"
+        oracle = FrankWolfe.lazified_conditional_gradient
     elseif oracle_type == "BCG"
-        oracle = blended_conditional_gradient
+        oracle = FrankWolfe.blended_conditional_gradient
     elseif oracle_type == "BPCG"
         oracle = FrankWolfe.blended_pairwise_conditional_gradient
     end
     
     # create L1 ball as feasible region
     region = FrankWolfe.LpNormLMO{1}(tau-1)
-    
-    # compute starting point
+
+
+    # call oracles
     if inverse_hessian_boost in ["weak", "full"]
+        display("Inverse Hessian Boosting (IHB) is active. Vanilla Frank-Wolfe is used for the IHB run.")
+
+        # compute starting point for IHB
         x0 = l1_projection(solution; radius=tau-1)
         x0 = reshape(x0, length(x0))
-    else
-        x0 = compute_extreme_point(region, zeros(Float64, n))
-        x0 = Vector(x0)
-    end
-    
-    # run oracle to find coefficient vector
-    if inverse_hessian_boost == "weak"
-        coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
+
+        # IHB oracle call
+        coefficient_vector, _ = FrankWolfe.frank_wolfe(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
         if typeof(coefficient_vector) <: FrankWolfe.ScaledHotVector
             coefficient_vector = convert(Vector, coefficient_vector)
         end
         coefficient_vector = vcat(coefficient_vector, [1])
     
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
-        
-        if loss <= psi
+
+        # attempt to find sparse solution if IHB solution found
+        if inverse_hessian_boost == "weak" && loss <= psi 
+            display("IHB solution found. Attempting to find sparse solution.")
+
             x0 = compute_extreme_point(region, zeros(Float64, n))
             x0 = Vector(x0)
+
             tmp_coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
             tmp_coefficient_vector = vcat(tmp_coefficient_vector, [1])
             
@@ -83,14 +92,18 @@ function conditional_gradients(
                 loss = loss2
                 coefficient_vector = tmp_coefficient_vector
             end
-                   
         end
-    else    
+    else
+        # compute starting vertex
+        x0 = compute_extreme_point(region, zeros(Float64, n))
+        x0 = Vector(x0)
+
+        # oracle call
         coefficient_vector, _ = oracle(f, grad!, region, x0; epsilon=epsilon, max_iteration=max_iters)
         coefficient_vector = vcat(coefficient_vector, [1])
        
         loss = 1/m * norm(data_with_labels * coefficient_vector, 2)^2
-    end        
+    end      
     return coefficient_vector, loss
 end
 
